@@ -1,0 +1,55 @@
+{
+  "income_tax_brackets": [
+    { "min": 0, "max": 7010, "rate": 0.10 },
+    { "min": 7011, "max": 10060, "rate": 0.14 },
+    { "min": 10061, "max": 16150, "rate": 0.20 },
+    { "min": 16151, "max": 22440, "rate": 0.31 },
+    { "min": 22441, "max": 46690, "rate": 0.35 },
+    { "min": 46691, "max": 60130, "rate": 0.47 },
+    { "min": 60131, "max": null, "rate": 0.50 }
+  ],
+  "social_security": {
+    "bituach_leumi_rate_1": 0.0427,
+    "bituach_leumi_threshold_1": 7522,
+    "bituach_leumi_rate_2": 0.1217,
+    "bituach_leumi_threshold_2": 50695,
+    "is_tax_deductible": true
+  },
+  "pension": {
+    "employee_rate": 0.06,
+    "employer_pension_rate": 0.065,
+    "employer_severance_rate": 0.0833,
+    "is_tax_deductible": true
+  },
+  "credit_points": {
+    "value_per_point_monthly": 242,
+    "base_resident": 2.25,
+    "women": 0.5,
+    "single_parent": 1.0,
+    "spouse_no_income": 1.0,
+    "working_youth": 1.0,
+    "children_year_1_2": 2.5,
+    "children_year_3": 4.5,
+    "children_year_4_5": 3.5,
+    "disabled_child": 2.0,
+    "army_service_long": 2.0,
+    "army_service_short": 1.0,
+    "new_immigrant_monthly": 0.25,
+    "new_immigrant_duration_months": 54,
+    "academic_degree_annual": 1.0,
+    "academic_degree_years": 3,
+    "masters_degree_annual": 0.5,
+    "masters_degree_years": 2,
+    "professional_certificate_annual": 1.0,
+    "professional_certificate_years": 3
+  },
+  "locality_discounts": [
+    { "name": "Eilat", "name_he": "אילת", "discount_percent": 0.10, "max_income": 14000 },
+    { "name": "Kiryat Shmona", "name_he": "קריית שמונה", "discount_percent": 0.09, "max_income": 12000 },
+    { "name": "Sderot", "name_he": "שדרות", "discount_percent": 0.08, "max_income": 12000 },
+    { "name": "Dimona", "name_he": "דימונה", "discount_percent": 0.07, "max_income": 11000 },
+    { "name": "Beit She'an", "name_he": "בית שאן", "discount_percent": 0.07, "max_income": 11000 },
+    { "name": "Yeruham", "name_he": "ירוחם", "discount_percent": 0.09, "max_income": 12000 },
+    { "name": "Mitzpe Ramon", "name_he": "מצפה רמון", "discount_percent": 0.09, "max_income": 12000 }
+  ]
+}

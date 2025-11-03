@@ -1,14 +1,118 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { CalculatorForm } from '@/components/calculator/CalculatorForm';
+import { ResultsDisplay } from '@/components/calculator/ResultsDisplay';
+import { calculateNetSalary } from '@/lib/calculator/taxEngine';
+import { Info, Calculator } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import type { CalculatorInputs, CalculationResult } from '@/types/calculator';
 
-const Index = () => {
+export default function Index() {
+  const [result, setResult] = useState<CalculationResult | null>(null);
+
+  const handleCalculate = (inputs: CalculatorInputs) => {
+    const calculationResult = calculateNetSalary(inputs);
+    setResult(calculationResult);
+    
+    // Scroll to results
+    setTimeout(() => {
+      document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b bg-card shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <Calculator className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">MASTIK</h1>
+              <p className="text-xs text-muted-foreground">Israeli Salary Calculator</p>
+            </div>
+          </div>
+          <Link to="/about">
+            <Button variant="outline" size="sm">
+              <Info className="mr-2 h-4 w-4" />
+              About
+            </Button>
+          </Link>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border-b">
+        <div className="container mx-auto px-4 py-12 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            Calculate Your Net Salary
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Transparent breakdown of Israeli taxes, social deductions, and credit points for 2025
+          </p>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          {/* Calculator Form */}
+          <div>
+            <CalculatorForm onCalculate={handleCalculate} />
+          </div>
+
+          {/* Results */}
+          <div id="results">
+            {result ? (
+              <ResultsDisplay result={result} />
+            ) : (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center text-muted-foreground p-8">
+                  <Calculator className="h-16 w-16 mx-auto mb-4 opacity-20" />
+                  <p>Enter your details and click calculate to see results</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Features */}
+        <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="text-center p-6 rounded-lg bg-card border">
+            <div className="h-12 w-12 rounded-lg bg-primary/10 mx-auto mb-4 flex items-center justify-center">
+              <span className="text-2xl">📊</span>
+            </div>
+            <h3 className="font-semibold mb-2">Accurate Calculations</h3>
+            <p className="text-sm text-muted-foreground">Based on official 2025 Israeli tax rules and regulations</p>
+          </div>
+          
+          <div className="text-center p-6 rounded-lg bg-card border">
+            <div className="h-12 w-12 rounded-lg bg-accent/10 mx-auto mb-4 flex items-center justify-center">
+              <span className="text-2xl">🎯</span>
+            </div>
+            <h3 className="font-semibold mb-2">Credit Points</h3>
+            <p className="text-sm text-muted-foreground">Comprehensive נקודות זיכוי calculation for all categories</p>
+          </div>
+          
+          <div className="text-center p-6 rounded-lg bg-card border">
+            <div className="h-12 w-12 rounded-lg bg-success/10 mx-auto mb-4 flex items-center justify-center">
+              <span className="text-2xl">🔍</span>
+            </div>
+            <h3 className="font-semibold mb-2">Transparent</h3>
+            <p className="text-sm text-muted-foreground">Clear breakdown of every deduction and contribution</p>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t mt-16 py-8 bg-muted/30">
+        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+          <p>MASTIK - Israeli Net Salary Calculator © 2025</p>
+          <p className="mt-2">For informational purposes only. Consult a certified accountant for official calculations.</p>
+        </div>
+      </footer>
     </div>
   );
-};
-
-export default Index;
+}
