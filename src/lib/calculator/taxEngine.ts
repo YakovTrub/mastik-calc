@@ -242,6 +242,8 @@ export function calculateCreditPoints(inputs: CalculatorInputs): CreditPointBrea
 }
 
 function calculateLocalityDiscount(locality: string, incomeTax: number, grossSalary: number): number {
+  if (!locality || locality === 'none') return 0;
+  
   const localityData = taxRules.locality_discounts.find(
     loc => loc.name === locality || loc.name_he === locality
   );

@@ -26,7 +26,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
     isNewImmigrant: false,
     immigrationDate: null,
     hasDisability: false,
-    locality: '',
+    locality: 'none',
     voluntaryPension: 0,
     hasSecondJob: false,
     secondJobIncome: 0,
@@ -197,7 +197,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
               <SelectValue placeholder="Select locality" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">None</SelectItem>
+              <SelectItem value="none">None</SelectItem>
               {taxRules.locality_discounts.map((loc) => (
                 <SelectItem key={loc.name} value={loc.name}>
                   {loc.name} ({loc.discount_percent * 100}% discount)
