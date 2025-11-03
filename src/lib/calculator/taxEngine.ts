@@ -226,31 +226,31 @@ export function calculateCreditPoints(inputs: CalculatorInputs): CreditPointBrea
     
     if (monthsSinceImmigration < maxDuration) {
       if (isAfter2022) {
-        // After 2022: 1/12 (months 1-12), ¼ (months 13-30), ⅙ (months 31-42), 1/12 (months 43-54)
+        // After 2022: 1 pt (months 1-12), 3 pts (months 13-30), 2 pts (months 31-42), 1 pt (months 43-54)
         if (monthsSinceImmigration < 12) {
-          monthlyPoints = 1/12;
+          monthlyPoints = 1;
         } else if (monthsSinceImmigration < 30) {
-          monthlyPoints = 1/4;
+          monthlyPoints = 3;
         } else if (monthsSinceImmigration < 42) {
-          monthlyPoints = 1/6;
+          monthlyPoints = 2;
         } else {
-          monthlyPoints = 1/12;
+          monthlyPoints = 1;
         }
       } else {
-        // Before 2022: ¼ (months 1-18), ⅙ (months 19-30), 1/12 (months 31-42)
+        // Before 2022: 3 pts (months 1-18), 2 pts (months 19-30), 1 pt (months 31-42)
         if (monthsSinceImmigration < 18) {
-          monthlyPoints = 1/4;
+          monthlyPoints = 3;
         } else if (monthsSinceImmigration < 30) {
-          monthlyPoints = 1/6;
+          monthlyPoints = 2;
         } else {
-          monthlyPoints = 1/12;
+          monthlyPoints = 1;
         }
       }
       
       credits.push({
         category: 'New Immigrant',
-        points: parseFloat(monthlyPoints.toFixed(4)),
-        description: `Oleh Chadash monthly credit (month ${monthsSinceImmigration + 1} of ${maxDuration}, ${monthlyPoints.toFixed(4)} pts/month ≈ ₪${Math.round(monthlyPoints * 2904)}/year)`
+        points: monthlyPoints,
+        description: `Oleh Chadash monthly credit (month ${monthsSinceImmigration + 1} of ${maxDuration}, ${monthlyPoints} pts/month ≈ ₪${Math.round(monthlyPoints * 242)}/month)`
       });
     }
   }
