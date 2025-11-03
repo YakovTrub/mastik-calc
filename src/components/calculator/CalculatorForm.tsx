@@ -5,13 +5,9 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calculator, CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
+import { Calculator } from 'lucide-react';
 import type { CalculatorInputs } from '@/types/calculator';
 import taxRules from '@/config/taxRules2025.json';
-import { cn } from '@/lib/utils';
 
 interface CalculatorFormProps {
   onCalculate: (inputs: CalculatorInputs) => void;
@@ -44,19 +40,45 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
     onCalculate(inputs);
   };
 
+  const [dateOfBirthText, setDateOfBirthText] = useState('');
+  const [immigrationDateText, setImmigrationDateText] = useState('');
+
   const updateChildrenAges = (count: number) => {
     const ages = Array(count).fill(0).map((_, i) => inputs.childrenAges[i] || 0);
     setInputs({ ...inputs, numberOfChildren: count, childrenAges: ages });
   };
 
-  const calculateAge = (birthDate: Date): number => {
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
+  const parseDateDDMMYYYY = (dateStr: string): Date | null => {
+    const parts = dateStr.split('/');
+    if (parts.length !== 3) return null;
+    
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
+    const year = parseInt(parts[2], 10);
+    
+    if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
+    if (day < 1 || day > 31 || month < 0 || month > 11 || year < 1900 || year > new Date().getFullYear()) return null;
+    
+    const date = new Date(year, month, day);
+    
+    // Validate the date is valid (e.g., not Feb 30)
+    if (date.getDate() !== day || date.getMonth() !== month || date.getFullYear() !== year) {
+      return null;
     }
-    return age;
+    
+    return date;
+  };
+
+  const handleDateOfBirthChange = (value: string) => {
+    setDateOfBirthText(value);
+    const parsed = parseDateDDMMYYYY(value);
+    setInputs({ ...inputs, dateOfBirth: parsed });
+  };
+
+  const handleImmigrationDateChange = (value: string) => {
+    setImmigrationDateText(value);
+    const parsed = parseDateDDMMYYYY(value);
+    setInputs({ ...inputs, immigrationDate: parsed });
   };
 
   return (
@@ -93,30 +115,15 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="dateOfBirth">Date of Birth</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !inputs.dateOfBirth && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {inputs.dateOfBirth ? format(inputs.dateOfBirth, "PPP") : "Pick a date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={inputs.dateOfBirth || undefined}
-                  onSelect={(date) => setInputs({ ...inputs, dateOfBirth: date || null })}
-                  disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <Label htmlFor="dateOfBirth">Date of Birth (DD/MM/YYYY)</Label>
+            <Input
+              id="dateOfBirth"
+              type="text"
+              placeholder="DD/MM/YYYY"
+              value={dateOfBirthText}
+              onChange={(e) => handleDateOfBirthChange(e.target.value)}
+              maxLength={10}
+            />
           </div>
 
           <div className="space-y-2">
@@ -233,30 +240,15 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
 
           {inputs.isNewImmigrant && (
             <div className="ml-6 space-y-2">
-              <Label htmlFor="immigrationDate">Immigration Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !inputs.immigrationDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {inputs.immigrationDate ? format(inputs.immigrationDate, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={inputs.immigrationDate || undefined}
-                    onSelect={(date) => setInputs({ ...inputs, immigrationDate: date || null })}
-                    disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <Label htmlFor="immigrationDate">Immigration Date (DD/MM/YYYY)</Label>
+              <Input
+                id="immigrationDate"
+                type="text"
+                placeholder="DD/MM/YYYY"
+                value={immigrationDateText}
+                onChange={(e) => handleImmigrationDateChange(e.target.value)}
+                maxLength={10}
+              />
             </div>
           )}
         </div>
