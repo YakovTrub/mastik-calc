@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
@@ -8,6 +9,8 @@ interface ResultsDisplayProps {
 }
 
 export function ResultsDisplay({ result }: ResultsDisplayProps) {
+  const { t } = useTranslation();
+  
   const formatCurrency = (amount: number) => {
     return `₪${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
@@ -21,14 +24,14 @@ export function ResultsDisplay({ result }: ResultsDisplayProps) {
       {/* Summary Card */}
       <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-2 border-primary/20">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-muted-foreground">Net Monthly Salary</h3>
+          <h3 className="text-lg font-semibold text-muted-foreground">{t('results.netSalary')}</h3>
           <DollarSign className="h-6 w-6 text-success" />
         </div>
         <div className="text-4xl font-bold text-success mb-2">
           {formatCurrency(result.netSalary)}
         </div>
         <p className="text-sm text-muted-foreground">
-          {percentOfGross(result.netSalary)}% of gross salary
+          {percentOfGross(result.netSalary)}% {t('results.ofGross')}
         </p>
       </Card>
 
@@ -36,7 +39,7 @@ export function ResultsDisplay({ result }: ResultsDisplayProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-muted-foreground">Gross Salary</span>
+            <span className="text-sm font-medium text-muted-foreground">{t('results.grossSalary')}</span>
             <TrendingUp className="h-4 w-4 text-success" />
           </div>
           <div className="text-2xl font-bold text-foreground mt-2">
@@ -46,7 +49,7 @@ export function ResultsDisplay({ result }: ResultsDisplayProps) {
 
         <Card className="p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-muted-foreground">Total Deductions</span>
+            <span className="text-sm font-medium text-muted-foreground">{t('results.totalDeductions')}</span>
             <TrendingDown className="h-4 w-4 text-destructive" />
           </div>
           <div className="text-2xl font-bold text-destructive mt-2">
@@ -57,11 +60,11 @@ export function ResultsDisplay({ result }: ResultsDisplayProps) {
 
       {/* Detailed Breakdown */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Detailed Breakdown</h3>
+        <h3 className="text-lg font-semibold mb-4">{t('results.breakdown')}</h3>
         
         <div className="space-y-3">
           <div className="flex justify-between items-center py-2">
-            <span className="text-sm text-muted-foreground">Taxable Base</span>
+            <span className="text-sm text-muted-foreground">{t('results.taxableBase')}</span>
             <span className="font-medium">{formatCurrency(result.taxableBase)}</span>
           </div>
           
@@ -69,24 +72,24 @@ export function ResultsDisplay({ result }: ResultsDisplayProps) {
           
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm">Income Tax (before credits)</span>
+              <span className="text-sm">{t('results.incomeTaxBeforeCredits')}</span>
               <span className="text-sm">{formatCurrency(result.incomeTaxBeforeCredits)}</span>
             </div>
             
             <div className="flex justify-between items-center text-success">
-              <span className="text-sm">Credit Points ({result.creditPoints.toFixed(2)})</span>
+              <span className="text-sm">{t('results.creditPoints')} ({result.creditPoints.toFixed(2)})</span>
               <span className="text-sm">-{formatCurrency(result.creditValue)}</span>
             </div>
             
             {result.localityDiscount > 0 && (
               <div className="flex justify-between items-center text-success">
-                <span className="text-sm">Locality Discount</span>
+                <span className="text-sm">{t('results.localityDiscount')}</span>
                 <span className="text-sm">-{formatCurrency(result.localityDiscount)}</span>
               </div>
             )}
             
             <div className="flex justify-between items-center font-medium pt-2 border-t">
-              <span className="text-sm">Income Tax (final)</span>
+              <span className="text-sm">{t('results.incomeTaxAfterCredits')}</span>
               <span className="text-destructive">{formatCurrency(result.incomeTaxAfterCredits - result.localityDiscount)}</span>
             </div>
           </div>
@@ -108,14 +111,14 @@ export function ResultsDisplay({ result }: ResultsDisplayProps) {
           <Separator />
           
           <div className="pt-2">
-            <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Employer Contributions</h4>
+            <h4 className="text-sm font-semibold mb-2 text-muted-foreground">{t('results.employerContributions')}</h4>
             <div className="space-y-1">
               <div className="flex justify-between items-center">
-                <span className="text-sm">Pension (Employer)</span>
+                <span className="text-sm">{t('results.pensionEmployer')}</span>
                 <span className="text-sm text-success">+{formatCurrency(result.pensionEmployer)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm">Severance Fund</span>
+                <span className="text-sm">{t('results.bituachLeumiEmployer')}</span>
                 <span className="text-sm text-success">+{formatCurrency(result.severanceEmployer)}</span>
               </div>
             </div>
@@ -126,7 +129,7 @@ export function ResultsDisplay({ result }: ResultsDisplayProps) {
       {/* Tax Efficiency */}
       <Card className="p-4 bg-muted/50">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Effective Tax Rate</span>
+          <span className="text-muted-foreground">{t('results.effectiveTaxRate')}</span>
           <span className="font-semibold">
             {((result.totalDeductions / result.grossSalary) * 100).toFixed(1)}%
           </span>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,6 +15,7 @@ interface CalculatorFormProps {
 }
 
 export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
+  const { t } = useTranslation();
   const [inputs, setInputs] = useState<CalculatorInputs>({
     grossSalary: 15000,
     pensionBase: undefined,
@@ -99,16 +101,16 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
     <Card className="p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold text-foreground">Salary Calculator</h2>
-          <p className="text-muted-foreground">Enter your details to calculate net salary</p>
+          <h2 className="text-2xl font-bold text-foreground">{t('form.title')}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="grossSalary">Gross Monthly Salary (₪)</Label>
+            <Label htmlFor="grossSalary">{t('form.grossSalary')}</Label>
             <Input
               id="grossSalary"
               type="number"
+              placeholder={t('form.grossSalaryPlaceholder')}
               value={inputs.grossSalary}
               onChange={(e) => setInputs({ ...inputs, grossSalary: parseFloat(e.target.value) })}
               required
@@ -116,14 +118,14 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="gender">Gender</Label>
+            <Label htmlFor="gender">{t('form.sex')}</Label>
             <Select value={inputs.gender} onValueChange={(value: 'male' | 'female') => setInputs({ ...inputs, gender: value })}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="male">{t('form.male')}</SelectItem>
+                <SelectItem value="female">{t('form.female')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -141,22 +143,22 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="maritalStatus">Marital Status</Label>
+            <Label htmlFor="maritalStatus">{t('form.maritalStatus')}</Label>
             <Select value={inputs.maritalStatus} onValueChange={(value: any) => setInputs({ ...inputs, maritalStatus: value })}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="single">Single</SelectItem>
-                <SelectItem value="married">Married</SelectItem>
-                <SelectItem value="divorced">Divorced</SelectItem>
-                <SelectItem value="widowed">Widowed</SelectItem>
+                <SelectItem value="single">{t('form.single')}</SelectItem>
+                <SelectItem value="married">{t('form.married')}</SelectItem>
+                <SelectItem value="divorced">{t('form.divorced')}</SelectItem>
+                <SelectItem value="widowed">{t('form.widowed')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="numberOfChildren">Number of Children</Label>
+            <Label htmlFor="numberOfChildren">{t('form.children')}</Label>
             <Input
               id="numberOfChildren"
               type="number"
@@ -249,12 +251,12 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
               checked={inputs.isNewImmigrant}
               onCheckedChange={(checked) => setInputs({ ...inputs, isNewImmigrant: checked as boolean })}
             />
-            <Label htmlFor="isNewImmigrant" className="cursor-pointer">New Immigrant (Oleh Chadash)</Label>
+            <Label htmlFor="isNewImmigrant" className="cursor-pointer">{t('form.isNewImmigrant')}</Label>
           </div>
 
           {inputs.isNewImmigrant && (
             <div className="ml-6 space-y-2">
-              <Label htmlFor="immigrationDate">Immigration Date (DD/MM/YYYY)</Label>
+              <Label htmlFor="immigrationDate">{t('form.aliyahDate')}</Label>
               <Input
                 id="immigrationDate"
                 type="text"
@@ -312,17 +314,17 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
         </div>
 
         <div className="space-y-4 border-t pt-4">
-          <h3 className="font-semibold text-lg">Additional Deductions & Credits</h3>
+          <h3 className="font-semibold text-lg">{t('form.donations')}</h3>
           
           <div className="space-y-2">
-            <Label htmlFor="donations">Donations (§46) (₪)</Label>
+            <Label htmlFor="donations">{t('form.donations')}</Label>
             <Input
               id="donations"
               type="number"
               min="0"
               value={inputs.donations}
               onChange={(e) => setInputs({ ...inputs, donations: parseFloat(e.target.value) || 0 })}
-              placeholder="35% tax credit, max 10,000₪/month"
+              placeholder={t('form.donationsPlaceholder')}
             />
           </div>
 
@@ -335,17 +337,17 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
               }
             />
             <Label htmlFor="hasDisabilityExemption" className="cursor-pointer">
-              Disability Exemption (up to 10,000₪/month tax-exempt income)
+              {t('form.hasDisabilityExemption')}
             </Label>
           </div>
         </div>
 
         <div className="space-y-4 border-t pt-4">
-          <h3 className="font-semibold text-lg">Fringe Benefits (Taxable)</h3>
+          <h3 className="font-semibold text-lg">{t('form.fringeBenefits')}</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="fringeCar">Company Car (₪)</Label>
+              <Label htmlFor="fringeCar">{t('form.carBenefit')}</Label>
               <Input
                 id="fringeCar"
                 type="number"
@@ -359,7 +361,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fringePhone">Phone (₪)</Label>
+              <Label htmlFor="fringePhone">{t('form.phoneBenefit')}</Label>
               <Input
                 id="fringePhone"
                 type="number"
@@ -373,7 +375,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fringeMeals">Meals (₪)</Label>
+              <Label htmlFor="fringeMeals">{t('form.mealsBenefit')}</Label>
               <Input
                 id="fringeMeals"
                 type="number"
@@ -387,7 +389,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fringeOther">Other Benefits (₪)</Label>
+              <Label htmlFor="fringeOther">{t('form.otherBenefits')}</Label>
               <Input
                 id="fringeOther"
                 type="number"
@@ -411,13 +413,13 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
             }
           />
           <Label htmlFor="isResident" className="cursor-pointer">
-            Israeli Resident (required for tax credits)
+            {t('form.isResident')}
           </Label>
         </div>
 
         <Button type="submit" className="w-full" size="lg">
           <Calculator className="mr-2 h-5 w-5" />
-          Calculate Net Salary
+          {t('form.calculate')}
         </Button>
       </form>
     </Card>

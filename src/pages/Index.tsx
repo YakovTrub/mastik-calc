@@ -1,13 +1,16 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { CalculatorForm } from '@/components/calculator/CalculatorForm';
 import { ResultsDisplay } from '@/components/calculator/ResultsDisplay';
 import { calculateNetSalary } from '@/lib/calculator/taxEngine';
 import { Info, Calculator } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import type { CalculatorInputs, CalculationResult } from '@/types/calculator';
 
 export default function Index() {
+  const { t } = useTranslation();
   const [result, setResult] = useState<CalculationResult | null>(null);
 
   const handleCalculate = (inputs: CalculatorInputs) => {
@@ -31,15 +34,18 @@ export default function Index() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">MASTIK</h1>
-              <p className="text-xs text-muted-foreground">Israeli Salary Calculator</p>
+              <p className="text-xs text-muted-foreground">{t('app.title')}</p>
             </div>
           </div>
-          <Link to="/about">
-            <Button variant="outline" size="sm">
-              <Info className="mr-2 h-4 w-4" />
-              About
-            </Button>
-          </Link>
+          <div className="flex items-center gap-4">
+            <LanguageSelector />
+            <Link to="/about">
+              <Button variant="outline" size="sm">
+                <Info className="mr-2 h-4 w-4" />
+                About
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -47,10 +53,10 @@ export default function Index() {
       <section className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border-b">
         <div className="container mx-auto px-4 py-12 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Calculate Your Net Salary
+            {t('app.title')}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Transparent breakdown of Israeli taxes, social deductions, and credit points for 2025
+            {t('app.subtitle')}
           </p>
         </div>
       </section>
@@ -71,7 +77,7 @@ export default function Index() {
               <div className="h-full flex items-center justify-center">
                 <div className="text-center text-muted-foreground p-8">
                   <Calculator className="h-16 w-16 mx-auto mb-4 opacity-20" />
-                  <p>Enter your details and click calculate to see results</p>
+                  <p>{t('form.calculate')}</p>
                 </div>
               </div>
             )}
