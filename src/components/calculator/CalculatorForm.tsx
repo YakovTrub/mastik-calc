@@ -16,6 +16,8 @@ interface CalculatorFormProps {
 export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
   const [inputs, setInputs] = useState<CalculatorInputs>({
     grossSalary: 15000,
+    pensionBase: undefined,
+    isResident: true,
     gender: 'male',
     dateOfBirth: null,
     maritalStatus: 'single',
@@ -26,13 +28,25 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
     isNewImmigrant: false,
     immigrationDate: null,
     hasDisability: false,
+    hasDisabilityExemption: false,
     locality: 'none',
     voluntaryPension: 0,
     hasSecondJob: false,
     secondJobIncome: 0,
+    hasTeumMas: false,
     educationLevel: 'none',
     isSingleParent: false,
     hasSpouseNoIncome: false,
+    fringeBenefits: {
+      car: 0,
+      phone: 0,
+      meals: 0,
+      other: 0
+    },
+    donations: 0,
+    hasKerenHistalmut: false,
+    kerenHistalmutEmployeeRate: 0,
+    kerenHistalmutEmployerRate: 0,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -295,6 +309,110 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
             value={inputs.voluntaryPension}
             onChange={(e) => setInputs({ ...inputs, voluntaryPension: parseFloat(e.target.value) || 0 })}
           />
+        </div>
+
+        <div className="space-y-4 border-t pt-4">
+          <h3 className="font-semibold text-lg">Additional Deductions & Credits</h3>
+          
+          <div className="space-y-2">
+            <Label htmlFor="donations">Donations (§46) (₪)</Label>
+            <Input
+              id="donations"
+              type="number"
+              min="0"
+              value={inputs.donations}
+              onChange={(e) => setInputs({ ...inputs, donations: parseFloat(e.target.value) || 0 })}
+              placeholder="35% tax credit, max 10,000₪/month"
+            />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="hasDisabilityExemption"
+              checked={inputs.hasDisabilityExemption}
+              onCheckedChange={(checked) => 
+                setInputs({ ...inputs, hasDisabilityExemption: checked as boolean })
+              }
+            />
+            <Label htmlFor="hasDisabilityExemption" className="cursor-pointer">
+              Disability Exemption (up to 10,000₪/month tax-exempt income)
+            </Label>
+          </div>
+        </div>
+
+        <div className="space-y-4 border-t pt-4">
+          <h3 className="font-semibold text-lg">Fringe Benefits (Taxable)</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="fringeCar">Company Car (₪)</Label>
+              <Input
+                id="fringeCar"
+                type="number"
+                min="0"
+                value={inputs.fringeBenefits.car}
+                onChange={(e) => setInputs({ 
+                  ...inputs, 
+                  fringeBenefits: { ...inputs.fringeBenefits, car: parseFloat(e.target.value) || 0 }
+                })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="fringePhone">Phone (₪)</Label>
+              <Input
+                id="fringePhone"
+                type="number"
+                min="0"
+                value={inputs.fringeBenefits.phone}
+                onChange={(e) => setInputs({ 
+                  ...inputs, 
+                  fringeBenefits: { ...inputs.fringeBenefits, phone: parseFloat(e.target.value) || 0 }
+                })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="fringeMeals">Meals (₪)</Label>
+              <Input
+                id="fringeMeals"
+                type="number"
+                min="0"
+                value={inputs.fringeBenefits.meals}
+                onChange={(e) => setInputs({ 
+                  ...inputs, 
+                  fringeBenefits: { ...inputs.fringeBenefits, meals: parseFloat(e.target.value) || 0 }
+                })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="fringeOther">Other Benefits (₪)</Label>
+              <Input
+                id="fringeOther"
+                type="number"
+                min="0"
+                value={inputs.fringeBenefits.other}
+                onChange={(e) => setInputs({ 
+                  ...inputs, 
+                  fringeBenefits: { ...inputs.fringeBenefits, other: parseFloat(e.target.value) || 0 }
+                })}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="isResident"
+            checked={inputs.isResident}
+            onCheckedChange={(checked) => 
+              setInputs({ ...inputs, isResident: checked as boolean })
+            }
+          />
+          <Label htmlFor="isResident" className="cursor-pointer">
+            Israeli Resident (required for tax credits)
+          </Label>
         </div>
 
         <Button type="submit" className="w-full" size="lg">
