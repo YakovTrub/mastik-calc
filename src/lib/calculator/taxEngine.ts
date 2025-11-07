@@ -61,13 +61,22 @@ export function calculateNetSalary(inputs: CalculatorInputs): CalculationResult 
     }
   );
   
-  // Step 5: Calculate Taxable Base for Income Tax
+  // Step 5: Calculate Keren Hishtalmut contributions
+  const kerenHistalmutEmployee = inputs.hasKerenHistalmut 
+    ? grossSalary * (inputs.kerenHistalmutEmployeeRate / 100)
+    : 0;
+  
+  const kerenHistalmutEmployer = inputs.hasKerenHistalmut
+    ? grossSalary * (inputs.kerenHistalmutEmployerRate / 100)
+    : 0;
+  
+  // Step 6: Calculate Taxable Base for Income Tax
   const taxableBase = taxableGross0 
     - bituachLeumiEmployee 
     - pensionResult.employeeContribution 
-    - inputs.voluntaryPension;
+    - kerenHistalmutEmployee;
   
-  // Step 6: Apply Disability Exemption (if applicable)
+  // Step 7: Apply Disability Exemption (if applicable)
   const disabilityResult = calculateDisabilityExemption(
     taxableBase,
     hasDisabilityExemption,
@@ -103,7 +112,7 @@ export function calculateNetSalary(inputs: CalculatorInputs): CalculationResult 
   const finalIncomeTax = Math.max(0, incomeTaxAfterDonations - localityResult.discount);
   
   // Step 12: Calculate Total Deductions and Net Salary
-  const totalDeductions = finalIncomeTax + bituachLeumiEmployee + pensionResult.employeeContribution;
+  const totalDeductions = finalIncomeTax + bituachLeumiEmployee + pensionResult.employeeContribution + kerenHistalmutEmployee;
   const netSalary = grossSalary - totalDeductions;
   
   // Build Breakdown
@@ -127,6 +136,15 @@ export function calculateNetSalary(inputs: CalculatorInputs): CalculationResult 
       description: `6% mandatory pension contribution (includes ${pensionResult.taxCredit35Percent.toFixed(2)}₪ tax credit @ 35%)`
     }
   ];
+  
+  if (kerenHistalmutEmployee > 0) {
+    breakdown.push({
+      category: 'Keren Hishtalmut (Employee)',
+      amount: kerenHistalmutEmployee,
+      isTaxDeductible: true,
+      description: `Study fund contribution: ${inputs.kerenHistalmutEmployeeRate}% employee + ${inputs.kerenHistalmutEmployerRate}% employer`
+    });
+  }
   
   if (inputs.voluntaryPension > 0) {
     breakdown.push({

@@ -36,12 +36,13 @@ export function calculateCreditPoints(
     }
   }
   
-  // Single parent (1 pt)
-  if (inputs.isSingleParent && inputs.isResident) {
+  // Single parent - additional +1 point per child
+  if (inputs.isSingleParent && inputs.numberOfChildren > 0 && inputs.isResident) {
+    const additionalPoints = inputs.numberOfChildren * 1;
     credits.push({
       category: 'Single Parent',
-      points: config.single_parent,
-      description: 'Credit for single/divorced parents raising children alone'
+      points: additionalPoints,
+      description: `Additional credit for single parent (+1 per child, ${inputs.numberOfChildren} children)`
     });
   }
   
@@ -54,25 +55,43 @@ export function calculateCreditPoints(
     });
   }
   
-  // Children credits
+  // Children credits - New 2024 system for 0-5 years
   if (inputs.isResident) {
     inputs.childrenAges.forEach((age, index) => {
       if (age <= 5) {
-        let points = config.children_year_4_5;
-        let yearDesc = '4-5';
+        // New 2024 system: Year 0: 2.5, Year 1: 4.5, Year 2: 4.5, Year 3: 3.5, Year 4-5: 2.5
+        let points = 2.5; // Default for ages 0, 4, 5
+        let yearDesc = age === 0 ? '0 (birth)' : '4-5';
         
-        if (age <= 2) {
-          points = config.children_year_1_2;
-          yearDesc = '1-2';
+        if (age === 1 || age === 2) {
+          points = 4.5;
+          yearDesc = age === 1 ? '1' : '2';
         } else if (age === 3) {
-          points = config.children_year_3;
+          points = 3.5;
           yearDesc = '3';
+        } else if (age >= 4) {
+          yearDesc = '4-5';
         }
         
         credits.push({
           category: `Child ${index + 1} (Age ${age})`,
           points,
-          description: `Credit for child in year ${yearDesc} (${points} pts = ≈${Math.round(points * config.value_per_point_monthly * 12)} ₪/year)`
+          description: `Credit for child year ${yearDesc} (${points} pts = ≈₪${Math.round(points * config.value_per_point_monthly)} monthly)`
+        });
+      } else if (age >= 6 && age <= 17) {
+        // Ages 6-17: +1 point per parent (or +2 for single parent)
+        const points = inputs.isSingleParent ? 2 : 1;
+        credits.push({
+          category: `Child ${index + 1} (Age ${age})`,
+          points,
+          description: `Credit for child age 6-17 (${points} pt${points > 1 ? 's' : ''} ${inputs.isSingleParent ? 'single parent' : 'per parent'})`
+        });
+      } else if (age === 18) {
+        // Age 18: 0.5 points
+        credits.push({
+          category: `Child ${index + 1} (Age ${age})`,
+          points: 0.5,
+          description: 'Credit for child age 18 (0.5 pts)'
         });
       }
     });
@@ -87,15 +106,21 @@ export function calculateCreditPoints(
     });
   }
   
-  // Army/National service
-  if (inputs.hasArmyService && inputs.isResident) {
-    const points = inputs.armyServiceMonths >= 23 ? config.army_service_long : config.army_service_short;
-    const serviceType = inputs.armyServiceMonths >= 23 ? 'long service (≥23 months)' : 'short service (12-22 months)';
-    credits.push({
-      category: 'Army Service',
-      points,
-      description: `Credit for ${serviceType}, valid for 36 months post-discharge`
-    });
+  // Army/National service - check 36-month validity from discharge
+  if (inputs.hasArmyService && inputs.armyDischargeDate && inputs.isResident) {
+    const monthsSinceDischarge = calculateMonthsSince(inputs.armyDischargeDate);
+    
+    if (monthsSinceDischarge <= 36) {
+      const points = inputs.armyServiceMonths >= 23 ? config.army_service_long : config.army_service_short;
+      const serviceType = inputs.armyServiceMonths >= 23 ? 'long service (≥23 months)' : 'short service (12-22 months)';
+      const remainingMonths = 36 - monthsSinceDischarge;
+      
+      credits.push({
+        category: 'Army Service',
+        points,
+        description: `Credit for ${serviceType} (${remainingMonths} months remaining of 36-month benefit)`
+      });
+    }
   }
   
   // New immigrant - Oleh Chadash (3, 2, 1 points per month)
@@ -138,37 +163,35 @@ export function calculateCreditPoints(
     }
   }
   
-  // Education credits (mutually exclusive)
-  if (inputs.isResident) {
-    if (inputs.educationLevel === 'bachelor') {
+  // Education credits with time-based expiry
+  if (inputs.isResident && inputs.graduationDate) {
+    const monthsSinceGraduation = calculateMonthsSince(inputs.graduationDate);
+    const yearsSinceGraduation = Math.floor(monthsSinceGraduation / 12);
+    
+    if (inputs.educationLevel === 'bachelor' && yearsSinceGraduation < config.academic_degree_years) {
       credits.push({
         category: 'Bachelor Degree',
         points: config.academic_degree_annual,
-        description: `Academic degree credit (1 pt/year for up to ${config.academic_degree_years} years from 2023+)`
+        description: `Academic degree credit (year ${yearsSinceGraduation + 1} of ${config.academic_degree_years})`
       });
-    } else if (inputs.educationLevel === 'master') {
-      credits.push({
-        category: 'Bachelor Degree',
-        points: config.academic_degree_annual,
-        description: 'Academic degree credit (base)'
-      });
+    } else if (inputs.educationLevel === 'master' && yearsSinceGraduation < config.masters_degree_years) {
       credits.push({
         category: 'Master Degree',
-        points: config.masters_degree_annual,
-        description: `Advanced degree credit (0.5 pt/year for up to ${config.masters_degree_years} years from 2023+)`
+        points: config.academic_degree_annual + config.masters_degree_annual,
+        description: `Advanced degree credit (year ${yearsSinceGraduation + 1} of ${config.masters_degree_years})`
       });
-    } else if (inputs.educationLevel === 'doctorate') {
+    } else if (inputs.educationLevel === 'doctorate' && yearsSinceGraduation < config.masters_degree_years) {
       const docPoints = config.academic_degree_annual + config.masters_degree_annual + 1;
       credits.push({
-        category: 'Bachelor + Master + PhD',
+        category: 'Doctoral Degree',
         points: docPoints,
-        description: 'Doctoral/Medical/Dental degree credits (cumulative academic credits)'
+        description: `Doctoral degree credit (year ${yearsSinceGraduation + 1} of ${config.masters_degree_years})`
       });
-    } else if (inputs.educationLevel === 'professional') {
+    } else if (inputs.educationLevel === 'professional' && yearsSinceGraduation < config.professional_certificate_years) {
       credits.push({
         category: 'Professional Certificate',
         points: config.professional_certificate_annual,
-        description: `Technician/Teacher/Engineer certificate (1 pt/year for up to ${config.professional_certificate_years} years, 2023+)`
+        description: `Professional certificate (year ${yearsSinceGraduation + 1} of ${config.professional_certificate_years})`
       });
     }
   }

@@ -27,6 +27,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
     childrenAges: [],
     hasArmyService: false,
     armyServiceMonths: 0,
+    armyDischargeDate: null,
     isNewImmigrant: false,
     immigrationDate: null,
     hasDisability: false,
@@ -37,6 +38,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
     secondJobIncome: 0,
     hasTeumMas: false,
     educationLevel: 'none',
+    graduationDate: null,
     isSingleParent: false,
     hasSpouseNoIncome: false,
     fringeBenefits: {
@@ -233,7 +235,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
 
           {inputs.hasArmyService && (
             <div className="ml-6 space-y-2">
-              <Label htmlFor="armyServiceMonths">Service Duration (months)</Label>
+              <Label htmlFor="armyServiceMonths">{t('form.serviceMonths')}</Label>
               <Input
                 id="armyServiceMonths"
                 type="number"
@@ -241,6 +243,17 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
                 max="36"
                 value={inputs.armyServiceMonths}
                 onChange={(e) => setInputs({ ...inputs, armyServiceMonths: parseInt(e.target.value) || 0 })}
+              />
+              <Label htmlFor="armyDischargeDate">{t('form.dischargeDate')}</Label>
+              <Input
+                id="armyDischargeDate"
+                type="text"
+                placeholder="DD/MM/YYYY"
+                onChange={(e) => {
+                  const parsed = parseDateDDMMYYYY(e.target.value);
+                  setInputs({ ...inputs, armyDischargeDate: parsed });
+                }}
+                maxLength={10}
               />
             </div>
           )}
@@ -270,20 +283,36 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="educationLevel">Education Level</Label>
+          <Label htmlFor="educationLevel">{t('form.educationLevel')}</Label>
           <Select value={inputs.educationLevel} onValueChange={(value: any) => setInputs({ ...inputs, educationLevel: value })}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="none">None</SelectItem>
-              <SelectItem value="bachelor">Bachelor's Degree</SelectItem>
-              <SelectItem value="master">Master's Degree</SelectItem>
-              <SelectItem value="doctorate">Doctorate/Medical</SelectItem>
-              <SelectItem value="professional">Professional Certificate</SelectItem>
+              <SelectItem value="none">{t('form.educationNone')}</SelectItem>
+              <SelectItem value="bachelor">{t('form.bachelor')}</SelectItem>
+              <SelectItem value="master">{t('form.master')}</SelectItem>
+              <SelectItem value="doctorate">{t('form.doctorate')}</SelectItem>
+              <SelectItem value="professional">{t('form.professional')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
+
+        {inputs.educationLevel !== 'none' && (
+          <div className="space-y-2">
+            <Label htmlFor="graduationDate">{t('form.graduationDate')}</Label>
+            <Input
+              id="graduationDate"
+              type="text"
+              placeholder="DD/MM/YYYY"
+              onChange={(e) => {
+                const parsed = parseDateDDMMYYYY(e.target.value);
+                setInputs({ ...inputs, graduationDate: parsed });
+              }}
+              maxLength={10}
+            />
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="locality">Eligible Locality (Optional)</Label>
@@ -302,15 +331,48 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="voluntaryPension">Voluntary Pension/Keren Hishtalmut (₪)</Label>
-          <Input
-            id="voluntaryPension"
-            type="number"
-            min="0"
-            value={inputs.voluntaryPension}
-            onChange={(e) => setInputs({ ...inputs, voluntaryPension: parseFloat(e.target.value) || 0 })}
-          />
+        <div className="space-y-4 border-t pt-4">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="hasKerenHistalmut"
+              checked={inputs.hasKerenHistalmut}
+              onCheckedChange={(checked) => setInputs({ ...inputs, hasKerenHistalmut: checked as boolean })}
+            />
+            <Label htmlFor="hasKerenHistalmut" className="cursor-pointer font-semibold">
+              {t('form.hasKerenHistalmut')}
+            </Label>
+          </div>
+
+          {inputs.hasKerenHistalmut && (
+            <div className="ml-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="kerenEmployeeRate">{t('form.kerenEmployeeRate')}</Label>
+                <Input
+                  id="kerenEmployeeRate"
+                  type="number"
+                  min="0"
+                  max="7.5"
+                  step="0.5"
+                  value={inputs.kerenHistalmutEmployeeRate}
+                  onChange={(e) => setInputs({ ...inputs, kerenHistalmutEmployeeRate: parseFloat(e.target.value) || 0 })}
+                  placeholder="2.5%"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="kerenEmployerRate">{t('form.kerenEmployerRate')}</Label>
+                <Input
+                  id="kerenEmployerRate"
+                  type="number"
+                  min="0"
+                  max="7.5"
+                  step="0.5"
+                  value={inputs.kerenHistalmutEmployerRate}
+                  onChange={(e) => setInputs({ ...inputs, kerenHistalmutEmployerRate: parseFloat(e.target.value) || 0 })}
+                  placeholder="2.5%"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-4 border-t pt-4">

@@ -18,6 +18,7 @@ export interface CalculatorInputs {
   // Service & Immigration
   hasArmyService: boolean;
   armyServiceMonths: number;
+  armyDischargeDate: Date | null;
   isNewImmigrant: boolean;
   immigrationDate: Date | null;
   
@@ -36,6 +37,7 @@ export interface CalculatorInputs {
   
   // Education
   educationLevel: 'none' | 'bachelor' | 'master' | 'doctorate' | 'professional';
+  graduationDate: Date | null;
   
   // Fringe benefits (taxable)
   fringeBenefits: {
