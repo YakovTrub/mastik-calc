@@ -49,3 +49,29 @@ export function calculatePension(
     taxableBenefitToEmployee
   };
 }
+
+export function calculateSelfEmployedPension(
+  profit: number,
+  config: PensionConfig
+): PensionResult {
+  const { self_employed_min_rate, self_employed_employer_rate, max_recognized_employee_7pct } = config;
+  
+  // Self-employed must contribute minimum 4.45% + 12.55%
+  const totalRate = self_employed_min_rate + self_employed_employer_rate;
+  const totalContribution = profit * totalRate;
+  
+  // Split into employee and employer portions for calculation
+  const employeeContribution = profit * self_employed_min_rate;
+  const employerPension = profit * self_employed_employer_rate;
+  
+  // 35% tax credit on up to 679₪/month (8,148₪/year)
+  const taxCredit35Percent = Math.min(employeeContribution, max_recognized_employee_7pct) * 0.35;
+  
+  return {
+    employeeContribution,
+    employerPension,
+    employerSeverance: 0,
+    taxCredit35Percent,
+    taxableBenefitToEmployee: 0
+  };
+}

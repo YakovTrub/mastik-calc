@@ -1,7 +1,33 @@
-export interface CalculatorInputs {
-  // Basic info
+export type EmploymentType = 'employee' | 'self_employed' | 'combined' | 'multiple_employers';
+
+export interface JobIncome {
+  id: string;
   grossSalary: number;
-  pensionBase?: number; // If different from gross
+  pensionRate: number;
+  creditPointsPercent: number; // Percentage of credit points allocated to this job
+}
+
+export interface SelfEmployedIncome {
+  revenue: number;
+  expenseRate: number; // 30% default or actual expenses percentage
+  actualExpenses?: number;
+}
+
+export interface CalculatorInputs {
+  // Employment type
+  employmentType: EmploymentType;
+  
+  // For employees (single job)
+  grossSalary: number;
+  pensionBase?: number;
+  
+  // For multiple employers
+  jobs: JobIncome[];
+  
+  // For self-employed
+  selfEmployedIncome: SelfEmployedIncome | null;
+  
+  // Basic info
   isResident: boolean;
   
   // Personal details
@@ -94,12 +120,19 @@ export interface TaxBracket {
 }
 
 export interface BituachLeumiConfig {
+  // Employee rates
   bituach_leumi_threshold_1: number;
   bituach_leumi_threshold_2: number;
   bituach_leumi_rate_1: number;
   bituach_leumi_rate_2: number;
   employer_rate_1: number;
   employer_rate_2: number;
+  
+  // Self-employed rates
+  self_employed_rate_1: number;
+  self_employed_rate_2: number;
+  self_employed_min_income: number;
+  self_employed_deduction_rate: number; // 52% of BL deducted from income
 }
 
 export interface PensionConfig {
@@ -110,6 +143,10 @@ export interface PensionConfig {
   max_recognized_employee_7pct: number;
   employer_recognized_base: number;
   severance_info_base: number;
+  self_employed_min_rate: number;
+  self_employed_employer_rate: number;
+  self_employed_max_rate: number;
+  self_employed_max_annual: number;
 }
 
 export interface CreditPointsConfig {

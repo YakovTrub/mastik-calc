@@ -15,6 +15,10 @@
     "bituach_leumi_threshold_2": 50695,
     "employer_rate_1": 0.0379,
     "employer_rate_2": 0.0779,
+    "self_employed_rate_1": 0.077,
+    "self_employed_rate_2": 0.18,
+    "self_employed_min_income": 3134,
+    "self_employed_deduction_rate": 0.52,
     "is_tax_deductible": true
   },
   "pension": {
@@ -25,6 +29,10 @@
     "max_recognized_employee_7pct": 679,
     "employer_recognized_base": 33290,
     "severance_info_base": 44100,
+    "self_employed_min_rate": 0.0445,
+    "self_employed_employer_rate": 0.1255,
+    "self_employed_max_rate": 0.11,
+    "self_employed_max_annual": 13203,
     "is_tax_deductible": true
   },
   "donations": {

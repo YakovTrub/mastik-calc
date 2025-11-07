@@ -17,8 +17,11 @@ interface CalculatorFormProps {
 export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
   const { t } = useTranslation();
   const [inputs, setInputs] = useState<CalculatorInputs>({
+    employmentType: 'employee',
     grossSalary: 15000,
     pensionBase: undefined,
+    jobs: [],
+    selfEmployedIncome: null,
     isResident: true,
     gender: 'male',
     dateOfBirth: null,
@@ -104,6 +107,25 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <h2 className="text-2xl font-bold text-foreground">{t('form.title')}</h2>
+        </div>
+
+        {/* Employment Type Selector */}
+        <div className="space-y-2">
+          <Label htmlFor="employmentType">{t('form.employmentType')}</Label>
+          <Select 
+            value={inputs.employmentType}
+            onValueChange={(value: any) => setInputs({ ...inputs, employmentType: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="employee">{t('form.employee')}</SelectItem>
+              <SelectItem value="self_employed">{t('form.selfEmployed')}</SelectItem>
+              <SelectItem value="combined">{t('form.combined')}</SelectItem>
+              <SelectItem value="multiple_employers">{t('form.multipleEmployers')}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

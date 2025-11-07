@@ -29,7 +29,11 @@ export function calculateNetSalary(inputs: CalculatorInputs): CalculationResult 
       recognized_wage_ceiling: taxRules.pension.recognized_wage_ceiling,
       max_recognized_employee_7pct: taxRules.pension.max_recognized_employee_7pct,
       employer_recognized_base: taxRules.pension.employer_recognized_base,
-      severance_info_base: taxRules.pension.severance_info_base
+      severance_info_base: taxRules.pension.severance_info_base,
+      self_employed_min_rate: taxRules.pension.self_employed_min_rate,
+      self_employed_employer_rate: taxRules.pension.self_employed_employer_rate,
+      self_employed_max_rate: taxRules.pension.self_employed_max_rate,
+      self_employed_max_annual: taxRules.pension.self_employed_max_annual
     }
   );
   
@@ -45,7 +49,11 @@ export function calculateNetSalary(inputs: CalculatorInputs): CalculationResult 
       bituach_leumi_rate_1: taxRules.social_security.bituach_leumi_rate_1,
       bituach_leumi_rate_2: taxRules.social_security.bituach_leumi_rate_2,
       employer_rate_1: taxRules.social_security.employer_rate_1,
-      employer_rate_2: taxRules.social_security.employer_rate_2
+      employer_rate_2: taxRules.social_security.employer_rate_2,
+      self_employed_rate_1: taxRules.social_security.self_employed_rate_1,
+      self_employed_rate_2: taxRules.social_security.self_employed_rate_2,
+      self_employed_min_income: taxRules.social_security.self_employed_min_income,
+      self_employed_deduction_rate: taxRules.social_security.self_employed_deduction_rate
     }
   );
   
@@ -57,7 +65,11 @@ export function calculateNetSalary(inputs: CalculatorInputs): CalculationResult 
       bituach_leumi_rate_1: taxRules.social_security.bituach_leumi_rate_1,
       bituach_leumi_rate_2: taxRules.social_security.bituach_leumi_rate_2,
       employer_rate_1: taxRules.social_security.employer_rate_1,
-      employer_rate_2: taxRules.social_security.employer_rate_2
+      employer_rate_2: taxRules.social_security.employer_rate_2,
+      self_employed_rate_1: taxRules.social_security.self_employed_rate_1,
+      self_employed_rate_2: taxRules.social_security.self_employed_rate_2,
+      self_employed_min_income: taxRules.social_security.self_employed_min_income,
+      self_employed_deduction_rate: taxRules.social_security.self_employed_deduction_rate
     }
   );
   
