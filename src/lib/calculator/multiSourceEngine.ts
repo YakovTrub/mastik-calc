@@ -133,7 +133,16 @@ export function calculateMultiSourceIncome(inputs: CalculatorInputs): MultiSourc
     remainingCreditValue -= employeeCreditUsed;
     
     const employeeTaxAfterCredits = Math.max(0, employeeIncomeTax - employeeCreditUsed);
-    const employeeFinalTax = employeeTaxAfterCredits;
+    
+    // Apply locality discount to employee income
+    const employeeLocalityResult = calculateLocalityDiscount(
+      inputs.locality,
+      employeeTaxAfterCredits,
+      inputs.grossSalary,
+      taxRules.locality_discounts
+    );
+    
+    const employeeFinalTax = Math.max(0, employeeTaxAfterCredits - employeeLocalityResult.discount);
     const employeeDeductions = employeeBL + employeePension.employeeContribution + employeeFinalTax;
 
     sources.push({
@@ -151,7 +160,7 @@ export function calculateMultiSourceIncome(inputs: CalculatorInputs): MultiSourc
       creditPointsUsed: employeeCreditUsed / taxRules.credit_points.value_per_point_monthly,
       creditValueUsed: employeeCreditUsed,
       incomeTaxAfterCredits: employeeTaxAfterCredits,
-      localityDiscount: 0,
+      localityDiscount: employeeLocalityResult.discount,
       finalIncomeTax: employeeFinalTax,
       netIncome: inputs.grossSalary - employeeDeductions,
       totalDeductions: employeeDeductions
@@ -188,7 +197,9 @@ export function calculateMultiSourceIncome(inputs: CalculatorInputs): MultiSourc
         self_employed_max_annual: taxRules.pension.self_employed_max_annual
       });
 
-      const selfEmployedTaxBase = profit - selfEmployedBL.contribution - selfEmployedPension.employeeContribution - selfEmployedBL.deductibleAmount;
+      // Tax base for self-employed: profit - pension - (52% of BL)
+      // NOTE: Full BL is paid, but only 52% is deductible from taxable income
+      const selfEmployedTaxBase = profit - selfEmployedPension.employeeContribution - selfEmployedBL.deductibleAmount;
       const selfEmployedIncomeTax = calculateProgressiveIncomeTax(selfEmployedTaxBase, taxRules.income_tax_brackets);
       
       // Apply remaining credits to self-employed income
@@ -196,7 +207,16 @@ export function calculateMultiSourceIncome(inputs: CalculatorInputs): MultiSourc
       remainingCreditValue -= selfEmployedCreditUsed;
       
       const selfEmployedTaxAfterCredits = Math.max(0, selfEmployedIncomeTax - selfEmployedCreditUsed);
-      const selfEmployedFinalTax = selfEmployedTaxAfterCredits;
+      
+      // Apply locality discount to self-employed income
+      const selfEmployedLocalityResult = calculateLocalityDiscount(
+        inputs.locality,
+        selfEmployedTaxAfterCredits,
+        profit,
+        taxRules.locality_discounts
+      );
+      
+      const selfEmployedFinalTax = Math.max(0, selfEmployedTaxAfterCredits - selfEmployedLocalityResult.discount);
       const selfEmployedDeductions = selfEmployedBL.contribution + selfEmployedPension.employeeContribution + selfEmployedFinalTax;
 
       sources.push({
@@ -214,7 +234,7 @@ export function calculateMultiSourceIncome(inputs: CalculatorInputs): MultiSourc
         creditPointsUsed: selfEmployedCreditUsed / taxRules.credit_points.value_per_point_monthly,
         creditValueUsed: selfEmployedCreditUsed,
         incomeTaxAfterCredits: selfEmployedTaxAfterCredits,
-        localityDiscount: 0,
+        localityDiscount: selfEmployedLocalityResult.discount,
         finalIncomeTax: selfEmployedFinalTax,
         netIncome: profit - selfEmployedDeductions,
         totalDeductions: selfEmployedDeductions
