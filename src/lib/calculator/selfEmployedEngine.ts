@@ -92,8 +92,13 @@ export function calculateSelfEmployedIncome(inputs: CalculatorInputs): Calculati
 
   const finalIncomeTax = Math.max(0, incomeTaxAfterDonations - localityResult.discount);
 
-  // Step 11: Calculate Total Deductions and Net Income
-  const totalDeductions = finalIncomeTax + bituachLeumiResult.contribution + pensionResult.employeeContribution + kerenHistalmutEmployee;
+  // Step 11: Calculate VAT for Osek Murshe (18% of revenue)
+  const vat = inputs.selfEmployedIncome.type === 'esek_murshe' 
+    ? inputs.selfEmployedIncome.revenue * 0.18 
+    : 0;
+
+  // Step 12: Calculate Total Deductions and Net Income
+  const totalDeductions = finalIncomeTax + bituachLeumiResult.contribution + pensionResult.employeeContribution + kerenHistalmutEmployee + vat;
   const netSalary = profit - totalDeductions;
 
   // Build Breakdown
@@ -114,9 +119,18 @@ export function calculateSelfEmployedIncome(inputs: CalculatorInputs): Calculati
       category: 'Pension (Self-Employed)',
       amount: pensionResult.employeeContribution,
       isTaxDeductible: true,
-      description: `Mandatory pension contribution (includes ₪${pensionResult.taxCredit35Percent.toFixed(2)} tax credit @ 35%)`
+      description: `Self-employed pension contribution (includes ₪${pensionResult.taxCredit35Percent.toFixed(2)} tax credit @ 35%)`
     }
   ];
+
+  if (vat > 0) {
+    breakdown.push({
+      category: 'VAT (Osek Murshe)',
+      amount: vat,
+      isTaxDeductible: false,
+      description: `18% VAT on revenue of ₪${inputs.selfEmployedIncome.revenue.toLocaleString()}`
+    });
+  }
 
   if (kerenHistalmutEmployee > 0) {
     breakdown.push({
@@ -163,8 +177,8 @@ export function calculateSelfEmployedIncome(inputs: CalculatorInputs): Calculati
     incomeTaxAfterCredits,
     bituachLeumiEmployee: bituachLeumiResult.contribution,
     pensionEmployee: pensionResult.employeeContribution,
-    pensionEmployer: pensionResult.employerPension,
-    severanceEmployer: 0,
+    pensionEmployer: 0, // Self-employed have no employer contributions
+    severanceEmployer: 0, // Self-employed have no employer severance
     localityDiscount: localityResult.discount,
     totalDeductions,
     netSalary,
