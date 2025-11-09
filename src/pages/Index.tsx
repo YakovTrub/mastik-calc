@@ -3,19 +3,32 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { CalculatorForm } from '@/components/calculator/CalculatorForm';
 import { ResultsDisplay } from '@/components/calculator/ResultsDisplay';
+import { MultiSourceResultsDisplay } from '@/components/calculator/MultiSourceResultsDisplay';
 import { calculateNetSalary } from '@/lib/calculator/taxEngine';
+import { calculateMultiSourceIncome } from '@/lib/calculator/multiSourceEngine';
 import { Info, Calculator } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import type { CalculatorInputs, CalculationResult } from '@/types/calculator';
+import type { MultiSourceCalculationResult } from '@/types/incomeSource';
 
 export default function Index() {
   const { t } = useTranslation();
   const [result, setResult] = useState<CalculationResult | null>(null);
+  const [multiResult, setMultiResult] = useState<MultiSourceCalculationResult | null>(null);
 
   const handleCalculate = (inputs: CalculatorInputs) => {
-    const calculationResult = calculateNetSalary(inputs);
-    setResult(calculationResult);
+    // Use multi-source engine for multiple employers or combined employment
+    if (inputs.employmentType === 'multiple_employers' || inputs.employmentType === 'combined') {
+      const multiSourceResult = calculateMultiSourceIncome(inputs);
+      setMultiResult(multiSourceResult);
+      setResult(null);
+    } else {
+      // Use single-source engine for single employer or self-employed
+      const calculationResult = calculateNetSalary(inputs);
+      setResult(calculationResult);
+      setMultiResult(null);
+    }
     
     // Scroll to results
     setTimeout(() => {
@@ -73,6 +86,8 @@ export default function Index() {
           <div id="results">
             {result ? (
               <ResultsDisplay result={result} />
+            ) : multiResult ? (
+              <MultiSourceResultsDisplay result={multiResult} />
             ) : (
               <div className="h-full flex items-center justify-center">
                 <div className="text-center text-muted-foreground p-8">

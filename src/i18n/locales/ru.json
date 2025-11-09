@@ -20,6 +20,14 @@
     "revenue": "Месячная выручка",
     "expenseRate": "Процент расходов (%)",
     "actualExpenses": "Фактические расходы",
+    "calculatedProfit": "Рассчитанная прибыль",
+    "jobs": "Работы",
+    "addJob": "Добавить работу",
+    "job": "Работа",
+    "pensionRate": "Пенсионная ставка %",
+    "creditPointsWarning": "Распределение налоговых точек",
+    "shouldBe100": "должно быть 100%",
+    "selfEmployedIncome": "Доход от самозанятости",
     "grossSalaryPlaceholder": "Введите брутто зарплату",
     "pensionBase": "База для пенсии",
     "pensionBasePlaceholder": "Если отличается от брутто",
@@ -81,6 +89,11 @@
     "bituachLeumiEmployer": "Битуах Леуми (Работодатель)",
     "pensionEmployer": "Пенсия и компенсации (Работодатель)",
     "effectiveTaxRate": "Эффективная налоговая ставка",
-    "ofGross": "от брутто"
+    "ofGross": "от брутто",
+    "multiSourceResults": "Разбивка источников дохода",
+    "source": "Источник",
+    "taxBeforeCredits": "Налог до вычетов",
+    "creditsUsed": "Использовано вычетов",
+    "taxAfterCredits": "Налог после вычетов"
   }
 }

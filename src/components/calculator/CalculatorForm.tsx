@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Calculator } from 'lucide-react';
-import type { CalculatorInputs } from '@/types/calculator';
+import { MultipleJobsInput } from './MultipleJobsInput';
+import { SelfEmployedInput } from './SelfEmployedInput';
+import type { CalculatorInputs, SelfEmployedIncome } from '@/types/calculator';
 import taxRules from '@/config/taxRules2025.json';
 
 interface CalculatorFormProps {
@@ -128,19 +130,59 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           </Select>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="grossSalary">{t('form.grossSalary')}</Label>
-            <Input
-              id="grossSalary"
-              type="number"
-              placeholder={t('form.grossSalaryPlaceholder')}
-              value={inputs.grossSalary}
-              onChange={(e) => setInputs({ ...inputs, grossSalary: parseFloat(e.target.value) })}
-              required
+        {/* Conditional Income Inputs based on Employment Type */}
+        {inputs.employmentType === 'employee' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="grossSalary">{t('form.grossSalary')}</Label>
+              <Input
+                id="grossSalary"
+                type="number"
+                placeholder={t('form.grossSalaryPlaceholder')}
+                value={inputs.grossSalary}
+                onChange={(e) => setInputs({ ...inputs, grossSalary: parseFloat(e.target.value) || 0 })}
+                required
+              />
+            </div>
+          </div>
+        )}
+
+        {inputs.employmentType === 'multiple_employers' && (
+          <MultipleJobsInput 
+            jobs={inputs.jobs}
+            onChange={(jobs) => setInputs({ ...inputs, jobs })}
+          />
+        )}
+
+        {inputs.employmentType === 'self_employed' && (
+          <SelfEmployedInput
+            income={inputs.selfEmployedIncome || { revenue: 0, expenseRate: 30, actualExpenses: 0 }}
+            onChange={(selfEmployedIncome) => setInputs({ ...inputs, selfEmployedIncome })}
+          />
+        )}
+
+        {inputs.employmentType === 'combined' && (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="grossSalary">{t('form.grossSalary')} (Employment)</Label>
+              <Input
+                id="grossSalary"
+                type="number"
+                placeholder={t('form.grossSalaryPlaceholder')}
+                value={inputs.grossSalary}
+                onChange={(e) => setInputs({ ...inputs, grossSalary: parseFloat(e.target.value) || 0 })}
+                required
+              />
+            </div>
+            <SelfEmployedInput
+              income={inputs.selfEmployedIncome || { revenue: 0, expenseRate: 30, actualExpenses: 0 }}
+              onChange={(selfEmployedIncome) => setInputs({ ...inputs, selfEmployedIncome })}
             />
           </div>
+        )}
 
+        {/* Personal Information - Always shown */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="gender">{t('form.sex')}</Label>
             <Select value={inputs.gender} onValueChange={(value: 'male' | 'female') => setInputs({ ...inputs, gender: value })}>

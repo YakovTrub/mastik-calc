@@ -20,6 +20,14 @@
     "revenue": "Monthly Revenue",
     "expenseRate": "Expense Rate (%)",
     "actualExpenses": "Actual Expenses",
+    "calculatedProfit": "Calculated Profit",
+    "jobs": "Jobs",
+    "addJob": "Add Job",
+    "job": "Job",
+    "pensionRate": "Pension Rate %",
+    "creditPointsWarning": "Credit points allocation",
+    "shouldBe100": "should be 100%",
+    "selfEmployedIncome": "Self-Employed Income",
     "grossSalaryPlaceholder": "Enter gross salary",
     "pensionBase": "Pension Base Salary",
     "pensionBasePlaceholder": "If different from gross",
@@ -81,6 +89,11 @@
     "bituachLeumiEmployer": "National Insurance (Employer)",
     "pensionEmployer": "Pension & Severance (Employer)",
     "effectiveTaxRate": "Effective Tax Rate",
-    "ofGross": "of gross"
+    "ofGross": "of gross",
+    "multiSourceResults": "Income Sources Breakdown",
+    "source": "Source",
+    "taxBeforeCredits": "Tax Before Credits",
+    "creditsUsed": "Credits Used",
+    "taxAfterCredits": "Tax After Credits"
   }
 }

@@ -20,6 +20,14 @@
     "revenue": "הכנסה חודשית",
     "expenseRate": "אחוז הוצאות (%)",
     "actualExpenses": "הוצאות בפועל",
+    "calculatedProfit": "רווח מחושב",
+    "jobs": "מקומות עבודה",
+    "addJob": "הוסף עבודה",
+    "job": "עבודה",
+    "pensionRate": "שיעור פנסיה %",
+    "creditPointsWarning": "הקצאת נקודות זיכוי",
+    "shouldBe100": "צריך להיות 100%",
+    "selfEmployedIncome": "הכנסה מעצמאי",
     "grossSalaryPlaceholder": "הכנס שכר ברוטו",
     "pensionBase": "בסיס לפנסיה",
     "pensionBasePlaceholder": "אם שונה מברוטו",
@@ -81,6 +89,11 @@
     "bituachLeumiEmployer": "ביטוח לאומי (מעסיק)",
     "pensionEmployer": "פנסיה ופיצויים (מעסיק)",
     "effectiveTaxRate": "שיעור מס אפקטיבי",
-    "ofGross": "מהברוטו"
+    "ofGross": "מהברוטו",
+    "multiSourceResults": "פירוט מקורות הכנסה",
+    "source": "מקור",
+    "taxBeforeCredits": "מס לפני זיכויים",
+    "creditsUsed": "זיכויים בשימוש",
+    "taxAfterCredits": "מס אחרי זיכויים"
   }
 }
