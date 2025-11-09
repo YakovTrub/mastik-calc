@@ -7,7 +7,10 @@ export interface JobIncome {
   creditPointsPercent: number; // Percentage of credit points allocated to this job
 }
 
+export type SelfEmploymentType = 'esek_patur' | 'esek_murshe' | 'esek_zair';
+
 export interface SelfEmployedIncome {
+  type: SelfEmploymentType;
   revenue: number;
   expenseRate: number; // 30% default or actual expenses percentage
   actualExpenses?: number;

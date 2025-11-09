@@ -15,7 +15,7 @@ export function calculateLocalityDiscount(
   grossSalary: number,
   localityDiscounts: LocalityDiscount[],
   currentDate: Date = new Date()
-): { discount: number; isValid: boolean; warning?: string } {
+): { discount: number; isValid: boolean; warning?: string; discountPercent?: number; localityName?: string } {
   if (!locality || locality === 'none') {
     return { discount: 0, isValid: true };
   }
@@ -55,5 +55,11 @@ export function calculateLocalityDiscount(
   
   const discount = incomeTax * localityData.discount_percent;
   
-  return { discount, isValid, warning };
+  return { 
+    discount, 
+    isValid, 
+    warning,
+    discountPercent: localityData.discount_percent * 100,
+    localityName: localityData.name
+  };
 }

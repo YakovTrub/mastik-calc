@@ -18,6 +18,23 @@ export function SelfEmployedInput({ income, onChange }: SelfEmployedInputProps) 
       <h4 className="font-semibold mb-4">{t('form.selfEmployedIncome') || 'Self-Employed Income'}</h4>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2 md:col-span-2">
+          <Label>{t('form.selfEmploymentType') || 'Self-Employment Type'}</Label>
+          <Select 
+            value={income.type}
+            onValueChange={(value) => onChange({ ...income, type: value as any })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="esek_patur">{t('form.esekPatur') || 'Esek Patur (עוסק פטור)'}</SelectItem>
+              <SelectItem value="esek_murshe">{t('form.esekMurshe') || 'Esek Murshe (עוסק מורשה)'}</SelectItem>
+              <SelectItem value="esek_zair">{t('form.esekZair') || 'Esek Zair (עוסק זעיר)'}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="space-y-2">
           <Label>{t('form.revenue') || 'Revenue'}</Label>
           <Input

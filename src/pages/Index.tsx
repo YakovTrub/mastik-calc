@@ -6,6 +6,7 @@ import { ResultsDisplay } from '@/components/calculator/ResultsDisplay';
 import { MultiSourceResultsDisplay } from '@/components/calculator/MultiSourceResultsDisplay';
 import { calculateNetSalary } from '@/lib/calculator/taxEngine';
 import { calculateMultiSourceIncome } from '@/lib/calculator/multiSourceEngine';
+import { calculateSelfEmployedIncome } from '@/lib/calculator/selfEmployedEngine';
 import { Info, Calculator } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LanguageSelector } from '@/components/LanguageSelector';
@@ -23,8 +24,13 @@ export default function Index() {
       const multiSourceResult = calculateMultiSourceIncome(inputs);
       setMultiResult(multiSourceResult);
       setResult(null);
+    } else if (inputs.employmentType === 'self_employed') {
+      // Use self-employed engine
+      const calculationResult = calculateSelfEmployedIncome(inputs);
+      setResult(calculationResult);
+      setMultiResult(null);
     } else {
-      // Use single-source engine for single employer or self-employed
+      // Use single-source engine for single employer (employee)
       const calculationResult = calculateNetSalary(inputs);
       setResult(calculationResult);
       setMultiResult(null);

@@ -23,7 +23,12 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
     grossSalary: 15000,
     pensionBase: undefined,
     jobs: [],
-    selfEmployedIncome: null,
+    selfEmployedIncome: {
+      type: 'esek_patur',
+      revenue: 0,
+      expenseRate: 30,
+      actualExpenses: 0
+    },
     isResident: true,
     gender: 'male',
     dateOfBirth: null,
@@ -156,7 +161,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
 
         {inputs.employmentType === 'self_employed' && (
           <SelfEmployedInput
-            income={inputs.selfEmployedIncome || { revenue: 0, expenseRate: 30, actualExpenses: 0 }}
+            income={inputs.selfEmployedIncome || { type: 'esek_patur', revenue: 0, expenseRate: 30, actualExpenses: 0 }}
             onChange={(selfEmployedIncome) => setInputs({ ...inputs, selfEmployedIncome })}
           />
         )}
@@ -175,7 +180,7 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
               />
             </div>
             <SelfEmployedInput
-              income={inputs.selfEmployedIncome || { revenue: 0, expenseRate: 30, actualExpenses: 0 }}
+              income={inputs.selfEmployedIncome || { type: 'esek_patur', revenue: 0, expenseRate: 30, actualExpenses: 0 }}
               onChange={(selfEmployedIncome) => setInputs({ ...inputs, selfEmployedIncome })}
             />
           </div>
