@@ -55,43 +55,46 @@ export function calculateCreditPoints(
     });
   }
   
-  // Children credits - New 2024 system for 0-5 years
+  // Children credits - 2024+ system
   if (inputs.isResident) {
     inputs.childrenAges.forEach((age, index) => {
-      if (age <= 5) {
-        // New 2024 system: Year 0: 2.5, Year 1: 4.5, Year 2: 4.5, Year 3: 3.5, Year 4-5: 2.5
-        let points = 2.5; // Default for ages 0, 4, 5
-        let yearDesc = age === 0 ? '0 (birth)' : '4-5';
-        
-        if (age === 1 || age === 2) {
-          points = 4.5;
-          yearDesc = age === 1 ? '1' : '2';
-        } else if (age === 3) {
-          points = 3.5;
-          yearDesc = '3';
-        } else if (age >= 4) {
-          yearDesc = '4-5';
-        }
-        
+      if (age === 0) {
+        credits.push({
+          category: `Child ${index + 1} (Birth Year)`,
+          points: 2.5,
+          description: `Child birth year (2.5 pts = ≈₪${Math.round(2.5 * config.value_per_point_monthly)} monthly)`
+        });
+      } else if (age === 1 || age === 2) {
         credits.push({
           category: `Child ${index + 1} (Age ${age})`,
-          points,
-          description: `Credit for child year ${yearDesc} (${points} pts = ≈₪${Math.round(points * config.value_per_point_monthly)} monthly)`
+          points: 4.5,
+          description: `Child age ${age} (4.5 pts = ≈₪${Math.round(4.5 * config.value_per_point_monthly)} monthly)`
+        });
+      } else if (age === 3) {
+        credits.push({
+          category: `Child ${index + 1} (Age 3)`,
+          points: 3.5,
+          description: `Child age 3 (3.5 pts = ≈₪${Math.round(3.5 * config.value_per_point_monthly)} monthly)`
+        });
+      } else if (age === 4 || age === 5) {
+        credits.push({
+          category: `Child ${index + 1} (Age ${age})`,
+          points: 2.5,
+          description: `Child age ${age} (2.5 pts = ≈₪${Math.round(2.5 * config.value_per_point_monthly)} monthly)`
         });
       } else if (age >= 6 && age <= 17) {
-        // Ages 6-17: +1 point per parent (or +2 for single parent)
+        // From 2024: each parent gets 1 point per child 6-17 (or 2 for single parent)
         const points = inputs.isSingleParent ? 2 : 1;
         credits.push({
           category: `Child ${index + 1} (Age ${age})`,
           points,
-          description: `Credit for child age 6-17 (${points} pt${points > 1 ? 's' : ''} ${inputs.isSingleParent ? 'single parent' : 'per parent'})`
+          description: `Child age 6-17 (${points} pt${points > 1 ? 's' : ''} ${inputs.isSingleParent ? 'single parent' : 'per parent'})`
         });
       } else if (age === 18) {
-        // Age 18: 0.5 points
         credits.push({
-          category: `Child ${index + 1} (Age ${age})`,
+          category: `Child ${index + 1} (Age 18)`,
           points: 0.5,
-          description: 'Credit for child age 18 (0.5 pts)'
+          description: 'Child age 18 (0.5 pts)'
         });
       }
     });
