@@ -154,21 +154,31 @@ export interface PensionConfig {
 
 export interface CreditPointsConfig {
   value_per_point_monthly: number;
+  value_per_point_annual: number;
   base_resident: number;
   women: number;
   working_youth: number;
-  single_parent: number;
-  spouse_no_income: number;
-  children_year_1_2: number;
-  children_year_3: number;
-  children_year_4_5: number;
-  disabled_child: number;
-  army_service_short: number;
+  foreign_worker_caregiver: number;
+  foreign_worker_other: number;
+  spouse_dependent_joint: number;
+  spouse_dependent_separate: number;
+  spouse_no_income?: number; // Legacy, maps to spouse_dependent_joint
+  alimony_ex_spouse: number;
+  child_support: number;
+  single_parent_per_child: number;
+  disabled_child_or_dependent: number;
   army_service_long: number;
-  academic_degree_annual: number;
-  academic_degree_years: number;
-  masters_degree_annual: number;
-  masters_degree_years: number;
-  professional_certificate_annual: number;
-  professional_certificate_years: number;
+  army_service_short: number;
+  academic_degree_ba_annual: number;
+  academic_degree_ba_years: number;
+  academic_degree_ma_annual: number;
+  academic_degree_ma_years: number;
+  academic_degree_phd_annual: number;
+  academic_degree_phd_years: number;
+  teaching_diploma_annual: number;
+  teaching_diploma_years: number;
+  medical_degree_years_1_3: number;
+  medical_degree_years_4_5: number;
+  professional_training_annual: number;
+  professional_training_years: number;
 }
