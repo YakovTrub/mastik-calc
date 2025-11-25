@@ -74,7 +74,7 @@ export function calculateNetSalary(inputs: CalculatorInputs): CalculationResult 
   );
   
   // Step 5: Calculate Keren Hishtalmut contributions
-  const kerenHistalmutEmployee = inputs.hasKerenHistalmut 
+  const kerenHistalmutEmployee = inputs.hasKerenHistalmut    
     ? grossSalary * (inputs.kerenHistalmutEmployeeRate / 100)
     : 0;
   

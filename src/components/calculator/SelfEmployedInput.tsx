@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import NumericInput from '@/components/ui/NumericInput';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { SelfEmployedIncome } from '@/types/calculator';
@@ -37,10 +38,9 @@ export function SelfEmployedInput({ income, onChange }: SelfEmployedInputProps) 
 
         <div className="space-y-2">
           <Label>{t('form.revenue') || 'Revenue'}</Label>
-          <Input
-            type="number"
+          <NumericInput
             value={income.revenue}
-            onChange={(e) => onChange({ ...income, revenue: parseFloat(e.target.value) || 0 })}
+            onValueChange={(v) => onChange({ ...income, revenue: v })}
             placeholder="0"
           />
         </div>
@@ -67,10 +67,9 @@ export function SelfEmployedInput({ income, onChange }: SelfEmployedInputProps) 
         {income.expenseRate === 0 && (
           <div className="space-y-2 md:col-span-2">
             <Label>{t('form.actualExpenses') || 'Actual Expenses'}</Label>
-            <Input
-              type="number"
+            <NumericInput
               value={income.actualExpenses || 0}
-              onChange={(e) => onChange({ ...income, actualExpenses: parseFloat(e.target.value) || 0 })}
+              onValueChange={(v) => onChange({ ...income, actualExpenses: v })}
               placeholder="0"
             />
           </div>

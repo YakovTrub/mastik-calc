@@ -76,7 +76,7 @@ const Signup = () => {
           },
         },
       });
-
+    console.log("signup values >>>>>>",values);
       if (error) {
         if (error.message.includes("already registered")) {
           toast({

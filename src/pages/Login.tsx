@@ -76,7 +76,7 @@ const Login = () => {
         title: "Success!",
         description: "Logged in successfully",
       });
-      
+      console.log("login values >>>>>>",values);
       navigate("/");
     } catch (error: any) {
       toast({

@@ -1,13 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CalculatorForm } from '@/components/calculator/CalculatorForm';
 import { ResultsDisplay } from '@/components/calculator/ResultsDisplay';
 import { MultiSourceResultsDisplay } from '@/components/calculator/MultiSourceResultsDisplay';
-import { calculateNetSalary } from '@/lib/calculator/taxEngine';
-import { calculateMultiSourceIncome } from '@/lib/calculator/multiSourceEngine';
-import { calculateSelfEmployedIncome } from '@/lib/calculator/selfEmployedEngine';
-import { Info, Calculator } from 'lucide-react';
+import { useCalculator } from '@/hooks/useCalculator';
+import { Info, Calculator, AlertCircle, Wifi, WifiOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import type { CalculatorInputs, CalculationResult } from '@/types/calculator';
@@ -15,31 +14,36 @@ import type { MultiSourceCalculationResult } from '@/types/incomeSource';
 
 export default function Index() {
   const { t } = useTranslation();
+  const { calculate, checkBackendHealth, loading, error } = useCalculator();
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [multiResult, setMultiResult] = useState<MultiSourceCalculationResult | null>(null);
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking');
 
-  const handleCalculate = (inputs: CalculatorInputs) => {
-    // Use multi-source engine for multiple employers or combined employment
-    if (inputs.employmentType === 'multiple_employers' || inputs.employmentType === 'combined') {
-      const multiSourceResult = calculateMultiSourceIncome(inputs);
-      setMultiResult(multiSourceResult);
-      setResult(null);
-    } else if (inputs.employmentType === 'self_employed') {
-      // Use self-employed engine
-      const calculationResult = calculateSelfEmployedIncome(inputs);
-      setResult(calculationResult);
+  useEffect(() => {
+    // Check backend health on component mount
+    const checkHealth = async () => {
+      const isHealthy = await checkBackendHealth();
+      setBackendStatus(isHealthy ? 'online' : 'offline');
+    };
+    checkHealth();
+  }, [checkBackendHealth]);
+
+  const handleCalculate = async (inputs: CalculatorInputs) => {
+    const calculationResult = await calculate(inputs);
+    
+    if (calculationResult) {
+      // For now, treat all results as single-source
+      // TODO: Update when backend supports multi-source results
+      setResult(calculationResult as CalculationResult);
       setMultiResult(null);
-    } else {
-      // Use single-source engine for single employer (employee)
-      const calculationResult = calculateNetSalary(inputs);
-      setResult(calculationResult);
-      setMultiResult(null);
+      
+      // Scroll to results
+      setTimeout(() => {
+        document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
     
-    // Scroll to results
-    setTimeout(() => {
-      document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    console.log('Calculation inputs:', inputs);
   };
 
   return (
@@ -57,6 +61,27 @@ export default function Index() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            {/* Backend Status Indicator */}
+            <div className="flex items-center gap-2 text-sm">
+              {backendStatus === 'checking' && (
+                <>
+                  <div className="animate-spin h-4 w-4 border-2 border-muted-foreground border-t-transparent rounded-full" />
+                  <span className="text-muted-foreground">Checking...</span>
+                </>
+              )}
+              {backendStatus === 'online' && (
+                <>
+                  <Wifi className="h-4 w-4 text-green-500" />
+                  <span className="text-green-600">Backend Online</span>
+                </>
+              )}
+              {backendStatus === 'offline' && (
+                <>
+                  <WifiOff className="h-4 w-4 text-red-500" />
+                  <span className="text-red-600">Backend Offline</span>
+                </>
+              )}
+            </div>
             <LanguageSelector />
             <Link to="/about">
               <Button variant="outline" size="sm">
@@ -82,15 +107,45 @@ export default function Index() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        {/* Backend Status Alert */}
+        {backendStatus === 'offline' && (
+          <Alert className="mb-6 border-red-200 bg-red-50">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800">
+              Backend server is offline. Please start the backend server at http://localhost:8000 to use the calculator.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* API Error Alert */}
+        {error && (
+          <Alert className="mb-6 border-red-200 bg-red-50">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800">
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
           {/* Calculator Form */}
           <div>
-            <CalculatorForm onCalculate={handleCalculate} />
+            <CalculatorForm 
+              onCalculate={handleCalculate} 
+              disabled={backendStatus === 'offline' || loading}
+            />
           </div>
 
           {/* Results */}
           <div id="results">
-            {result ? (
+            {loading ? (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center text-muted-foreground p-8">
+                  <div className="animate-spin h-16 w-16 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+                  <p>Calculating...</p>
+                </div>
+              </div>
+            ) : result ? (
               <ResultsDisplay result={result} />
             ) : multiResult ? (
               <MultiSourceResultsDisplay result={multiResult} />

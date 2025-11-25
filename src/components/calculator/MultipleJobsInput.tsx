@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import NumericInput from '@/components/ui/NumericInput';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
@@ -65,34 +66,31 @@ export function MultipleJobsInput({ jobs, onChange }: MultipleJobsInputProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="space-y-2">
               <Label>{t('form.grossSalary') || 'Gross Salary'}</Label>
-              <Input
-                type="number"
+              <NumericInput
                 value={job.grossSalary}
-                onChange={(e) => updateJob(job.id, 'grossSalary', parseFloat(e.target.value) || 0)}
+                onValueChange={(v) => updateJob(job.id, 'grossSalary', v)}
                 placeholder="0"
               />
             </div>
 
             <div className="space-y-2">
               <Label>{t('form.pensionRate') || 'Pension Rate %'}</Label>
-              <Input
-                type="number"
+              <NumericInput
                 value={job.pensionRate}
-                onChange={(e) => updateJob(job.id, 'pensionRate', parseFloat(e.target.value) || 6)}
+                onValueChange={(v) => updateJob(job.id, 'pensionRate', v)}
                 placeholder="6"
-                step="0.1"
+                step={0.1}
               />
             </div>
 
             <div className="space-y-2">
               <Label>{t('form.creditPoints') || 'Credit Points %'}</Label>
-              <Input
-                type="number"
+              <NumericInput
                 value={job.creditPointsPercent}
-                onChange={(e) => updateJob(job.id, 'creditPointsPercent', parseFloat(e.target.value) || 0)}
+                onValueChange={(v) => updateJob(job.id, 'creditPointsPercent', Math.max(0, Math.min(100, Math.trunc(v) || 0)))}
                 placeholder="0"
-                min="0"
-                max="100"
+                min={0}
+                max={100}
               />
             </div>
           </div>

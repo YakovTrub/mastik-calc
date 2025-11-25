@@ -43,7 +43,8 @@ describe('calculateProgressiveIncomeTax', () => {
     const result = calculateProgressiveIncomeTax(100000, testBrackets);
     expect(result).toBeGreaterThan(0);
     // Should apply highest bracket rate to amount above 57880
-    expect(result).toBeGreaterThan(50000);
+    // Expected value calculated from brackets: 39400
+    expect(result).toBeCloseTo(39400, 0);
   });
 
   it('should handle income exactly at bracket boundary', () => {

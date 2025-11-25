@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import NumericInput from '@/components/ui/NumericInput';
 import { Label } from '@/components/ui/label';
+import DatePickerInput from '@/components/ui/DatePickerInput';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -14,21 +16,17 @@ import taxRules from '@/config/taxRules2025.json';
 
 interface CalculatorFormProps {
   onCalculate: (inputs: CalculatorInputs) => void;
+  disabled?: boolean;
 }
 
-export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
+export function CalculatorForm({ onCalculate, disabled = false }: CalculatorFormProps) {
   const { t } = useTranslation();
   const [inputs, setInputs] = useState<CalculatorInputs>({
     employmentType: 'employee',
     grossSalary: 15000,
     pensionBase: undefined,
     jobs: [],
-    selfEmployedIncome: {
-      type: 'esek_patur',
-      revenue: 0,
-      expenseRate: 30,
-      actualExpenses: 0
-    },
+    selfEmployedIncome: null,
     isResident: true,
     gender: 'male',
     dateOfBirth: null,
@@ -121,7 +119,15 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           <Label htmlFor="employmentType">{t('form.employmentType')}</Label>
           <Select 
             value={inputs.employmentType}
-            onValueChange={(value: any) => setInputs({ ...inputs, employmentType: value })}
+            onValueChange={(value: any) =>
+              setInputs({
+                ...inputs,
+                employmentType: value,
+                // Clear self-employed income when switching to non-self-employed types
+                selfEmployedIncome:
+                  value === 'self_employed' || value === 'combined' ? inputs.selfEmployedIncome : null,
+              })
+            }
           >
             <SelectTrigger>
               <SelectValue />
@@ -140,12 +146,11 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="grossSalary">{t('form.grossSalary')}</Label>
-              <Input
+              <NumericInput
                 id="grossSalary"
-                type="number"
                 placeholder={t('form.grossSalaryPlaceholder')}
                 value={inputs.grossSalary}
-                onChange={(e) => setInputs({ ...inputs, grossSalary: parseFloat(e.target.value) || 0 })}
+                onValueChange={(v) => setInputs({ ...inputs, grossSalary: v })}
                 required
               />
             </div>
@@ -170,12 +175,11 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="grossSalary">{t('form.grossSalary')} (Employment)</Label>
-              <Input
+              <NumericInput
                 id="grossSalary"
-                type="number"
                 placeholder={t('form.grossSalaryPlaceholder')}
                 value={inputs.grossSalary}
-                onChange={(e) => setInputs({ ...inputs, grossSalary: parseFloat(e.target.value) || 0 })}
+                onValueChange={(v) => setInputs({ ...inputs, grossSalary: v })}
                 required
               />
             </div>
@@ -203,13 +207,11 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="dateOfBirth">Date of Birth (DD/MM/YYYY)</Label>
-            <Input
+            <DatePickerInput
               id="dateOfBirth"
-              type="text"
+              value={inputs.dateOfBirth}
               placeholder="DD/MM/YYYY"
-              value={dateOfBirthText}
-              onChange={(e) => handleDateOfBirthChange(e.target.value)}
-              maxLength={10}
+              onChange={(d) => setInputs({ ...inputs, dateOfBirth: d })}
             />
           </div>
 
@@ -230,13 +232,12 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="numberOfChildren">{t('form.children')}</Label>
-            <Input
+            <NumericInput
               id="numberOfChildren"
-              type="number"
-              min="0"
-              max="10"
+              min={0}
+              max={10}
               value={inputs.numberOfChildren}
-              onChange={(e) => updateChildrenAges(parseInt(e.target.value) || 0)}
+              onValueChange={(v) => updateChildrenAges(Math.max(0, Math.min(10, Math.trunc(v) || 0)))}
             />
           </div>
         </div>
@@ -246,16 +247,15 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
             <Label>Children Ages</Label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               {inputs.childrenAges.map((age, index) => (
-                <Input
+                <NumericInput
                   key={index}
-                  type="number"
-                  min="0"
-                  max="18"
+                  min={0}
+                  max={18}
                   placeholder={`Child ${index + 1}`}
                   value={age}
-                  onChange={(e) => {
+                  onValueChange={(v) => {
                     const newAges = [...inputs.childrenAges];
-                    newAges[index] = parseInt(e.target.value) || 0;
+                    newAges[index] = Math.max(0, Math.min(18, Math.trunc(v) || 0));
                     setInputs({ ...inputs, childrenAges: newAges });
                   }}
                 />
@@ -305,24 +305,19 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           {inputs.hasArmyService && (
             <div className="ml-6 space-y-2">
               <Label htmlFor="armyServiceMonths">{t('form.serviceMonths')}</Label>
-              <Input
+              <NumericInput
                 id="armyServiceMonths"
-                type="number"
-                min="12"
-                max="36"
+                min={12}
+                max={36}
                 value={inputs.armyServiceMonths}
-                onChange={(e) => setInputs({ ...inputs, armyServiceMonths: parseInt(e.target.value) || 0 })}
+                onValueChange={(v) => setInputs({ ...inputs, armyServiceMonths: Math.max(12, Math.min(36, Math.trunc(v) || 0)) })}
               />
               <Label htmlFor="armyDischargeDate">{t('form.dischargeDate')}</Label>
-              <Input
+              <DatePickerInput
                 id="armyDischargeDate"
-                type="text"
+                value={inputs.armyDischargeDate}
                 placeholder="DD/MM/YYYY"
-                onChange={(e) => {
-                  const parsed = parseDateDDMMYYYY(e.target.value);
-                  setInputs({ ...inputs, armyDischargeDate: parsed });
-                }}
-                maxLength={10}
+                onChange={(d) => setInputs({ ...inputs, armyDischargeDate: d })}
               />
             </div>
           )}
@@ -339,13 +334,11 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           {inputs.isNewImmigrant && (
             <div className="ml-6 space-y-2">
               <Label htmlFor="immigrationDate">{t('form.aliyahDate')}</Label>
-              <Input
+              <DatePickerInput
                 id="immigrationDate"
-                type="text"
+                value={inputs.immigrationDate}
                 placeholder="DD/MM/YYYY"
-                value={immigrationDateText}
-                onChange={(e) => handleImmigrationDateChange(e.target.value)}
-                maxLength={10}
+                onChange={(d) => setInputs({ ...inputs, immigrationDate: d })}
               />
             </div>
           )}
@@ -370,15 +363,11 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
         {inputs.educationLevel !== 'none' && (
           <div className="space-y-2">
             <Label htmlFor="graduationDate">{t('form.graduationDate')}</Label>
-            <Input
+            <DatePickerInput
               id="graduationDate"
-              type="text"
+              value={inputs.graduationDate}
               placeholder="DD/MM/YYYY"
-              onChange={(e) => {
-                const parsed = parseDateDDMMYYYY(e.target.value);
-                setInputs({ ...inputs, graduationDate: parsed });
-              }}
-              maxLength={10}
+              onChange={(d) => setInputs({ ...inputs, graduationDate: d })}
             />
           </div>
         )}
@@ -416,27 +405,25 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
             <div className="ml-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="kerenEmployeeRate">{t('form.kerenEmployeeRate')}</Label>
-                <Input
+                <NumericInput
                   id="kerenEmployeeRate"
-                  type="number"
-                  min="0"
-                  max="7.5"
-                  step="0.5"
+                  min={0}
+                  max={7.5}
+                  step={0.5}
                   value={inputs.kerenHistalmutEmployeeRate}
-                  onChange={(e) => setInputs({ ...inputs, kerenHistalmutEmployeeRate: parseFloat(e.target.value) || 0 })}
+                  onValueChange={(v) => setInputs({ ...inputs, kerenHistalmutEmployeeRate: v })}
                   placeholder="2.5%"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="kerenEmployerRate">{t('form.kerenEmployerRate')}</Label>
-                <Input
+                <NumericInput
                   id="kerenEmployerRate"
-                  type="number"
-                  min="0"
-                  max="7.5"
-                  step="0.5"
+                  min={0}
+                  max={7.5}
+                  step={0.5}
                   value={inputs.kerenHistalmutEmployerRate}
-                  onChange={(e) => setInputs({ ...inputs, kerenHistalmutEmployerRate: parseFloat(e.target.value) || 0 })}
+                  onValueChange={(v) => setInputs({ ...inputs, kerenHistalmutEmployerRate: v })}
                   placeholder="2.5%"
                 />
               </div>
@@ -449,12 +436,11 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           
           <div className="space-y-2">
             <Label htmlFor="donations">{t('form.donations')}</Label>
-            <Input
+            <NumericInput
               id="donations"
-              type="number"
-              min="0"
+              min={0}
               value={inputs.donations}
-              onChange={(e) => setInputs({ ...inputs, donations: parseFloat(e.target.value) || 0 })}
+              onValueChange={(v) => setInputs({ ...inputs, donations: v })}
               placeholder={t('form.donationsPlaceholder')}
             />
           </div>
@@ -479,56 +465,52 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="fringeCar">{t('form.carBenefit')}</Label>
-              <Input
+              <NumericInput
                 id="fringeCar"
-                type="number"
-                min="0"
+                min={0}
                 value={inputs.fringeBenefits.car}
-                onChange={(e) => setInputs({ 
-                  ...inputs, 
-                  fringeBenefits: { ...inputs.fringeBenefits, car: parseFloat(e.target.value) || 0 }
+                onValueChange={(v) => setInputs({
+                  ...inputs,
+                  fringeBenefits: { ...inputs.fringeBenefits, car: v }
                 })}
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="fringePhone">{t('form.phoneBenefit')}</Label>
-              <Input
+              <NumericInput
                 id="fringePhone"
-                type="number"
-                min="0"
+                min={0}
                 value={inputs.fringeBenefits.phone}
-                onChange={(e) => setInputs({ 
-                  ...inputs, 
-                  fringeBenefits: { ...inputs.fringeBenefits, phone: parseFloat(e.target.value) || 0 }
+                onValueChange={(v) => setInputs({
+                  ...inputs,
+                  fringeBenefits: { ...inputs.fringeBenefits, phone: v }
                 })}
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="fringeMeals">{t('form.mealsBenefit')}</Label>
-              <Input
+              <NumericInput
                 id="fringeMeals"
-                type="number"
-                min="0"
+                min={0}
                 value={inputs.fringeBenefits.meals}
-                onChange={(e) => setInputs({ 
-                  ...inputs, 
-                  fringeBenefits: { ...inputs.fringeBenefits, meals: parseFloat(e.target.value) || 0 }
+                onValueChange={(v) => setInputs({
+                  ...inputs,
+                  fringeBenefits: { ...inputs.fringeBenefits, meals: v }
                 })}
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="fringeOther">{t('form.otherBenefits')}</Label>
-              <Input
+              <NumericInput
                 id="fringeOther"
-                type="number"
-                min="0"
+                min={0}
                 value={inputs.fringeBenefits.other}
-                onChange={(e) => setInputs({ 
-                  ...inputs, 
-                  fringeBenefits: { ...inputs.fringeBenefits, other: parseFloat(e.target.value) || 0 }
+                onValueChange={(v) => setInputs({
+                  ...inputs,
+                  fringeBenefits: { ...inputs.fringeBenefits, other: v }
                 })}
               />
             </div>
@@ -548,9 +530,9 @@ export function CalculatorForm({ onCalculate }: CalculatorFormProps) {
           </Label>
         </div>
 
-        <Button type="submit" className="w-full" size="lg">
+        <Button type="submit" className="w-full" size="lg" disabled={disabled}>
           <Calculator className="mr-2 h-5 w-5" />
-          {t('form.calculate')}
+          {disabled ? 'Backend Offline' : t('form.calculate')}
         </Button>
       </form>
     </Card>
