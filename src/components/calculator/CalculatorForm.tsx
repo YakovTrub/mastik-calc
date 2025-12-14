@@ -372,23 +372,6 @@ export function CalculatorForm({ onCalculate, disabled = false }: CalculatorForm
           </div>
         )}
 
-        <div className="space-y-2">
-          <Label htmlFor="locality">Eligible Locality (Optional)</Label>
-          <Select value={inputs.locality} onValueChange={(value) => setInputs({ ...inputs, locality: value })}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select locality" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">None</SelectItem>
-              {taxRules.locality_discounts.map((loc) => (
-                <SelectItem key={loc.name} value={loc.name}>
-                  {loc.name} ({loc.discount_percent * 100}% discount)
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         <div className="space-y-4 border-t pt-4">
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -431,90 +414,17 @@ export function CalculatorForm({ onCalculate, disabled = false }: CalculatorForm
           )}
         </div>
 
-        <div className="space-y-4 border-t pt-4">
-          <h3 className="font-semibold text-lg">{t('form.donations')}</h3>
-          
-          <div className="space-y-2">
-            <Label htmlFor="donations">{t('form.donations')}</Label>
-            <NumericInput
-              id="donations"
-              min={0}
-              value={inputs.donations}
-              onValueChange={(v) => setInputs({ ...inputs, donations: v })}
-              placeholder={t('form.donationsPlaceholder')}
-            />
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="hasDisabilityExemption"
-              checked={inputs.hasDisabilityExemption}
-              onCheckedChange={(checked) => 
-                setInputs({ ...inputs, hasDisabilityExemption: checked as boolean })
-              }
-            />
-            <Label htmlFor="hasDisabilityExemption" className="cursor-pointer">
-              {t('form.hasDisabilityExemption')}
-            </Label>
-          </div>
-        </div>
-
-        <div className="space-y-4 border-t pt-4">
-          <h3 className="font-semibold text-lg">{t('form.fringeBenefits')}</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="fringeCar">{t('form.carBenefit')}</Label>
-              <NumericInput
-                id="fringeCar"
-                min={0}
-                value={inputs.fringeBenefits.car}
-                onValueChange={(v) => setInputs({
-                  ...inputs,
-                  fringeBenefits: { ...inputs.fringeBenefits, car: v }
-                })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="fringePhone">{t('form.phoneBenefit')}</Label>
-              <NumericInput
-                id="fringePhone"
-                min={0}
-                value={inputs.fringeBenefits.phone}
-                onValueChange={(v) => setInputs({
-                  ...inputs,
-                  fringeBenefits: { ...inputs.fringeBenefits, phone: v }
-                })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="fringeMeals">{t('form.mealsBenefit')}</Label>
-              <NumericInput
-                id="fringeMeals"
-                min={0}
-                value={inputs.fringeBenefits.meals}
-                onValueChange={(v) => setInputs({
-                  ...inputs,
-                  fringeBenefits: { ...inputs.fringeBenefits, meals: v }
-                })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="fringeOther">{t('form.otherBenefits')}</Label>
-              <NumericInput
-                id="fringeOther"
-                min={0}
-                value={inputs.fringeBenefits.other}
-                onValueChange={(v) => setInputs({
-                  ...inputs,
-                  fringeBenefits: { ...inputs.fringeBenefits, other: v }
-                })}
-              />
-            </div>
-          </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="hasDisabilityExemption"
+            checked={inputs.hasDisabilityExemption}
+            onCheckedChange={(checked) => 
+              setInputs({ ...inputs, hasDisabilityExemption: checked as boolean })
+            }
+          />
+          <Label htmlFor="hasDisabilityExemption" className="cursor-pointer">
+            {t('form.hasDisabilityExemption')}
+          </Label>
         </div>
 
         <div className="flex items-center space-x-2">
