@@ -432,7 +432,7 @@ export function CalculatorForm({ onCalculate, disabled = false }: CalculatorForm
         </div>
 
         <div className="space-y-4 border-t pt-4">
-          <h3 className="font-semibold text-lg">{t('form.donations')}</h3>
+          {/* <h3 className="font-semibold text-lg">{t('form.donations')}</h3> */}
           
           {/* <div className="space-y-2">
             <Label htmlFor="donations">{t('form.donations')}</Label>
