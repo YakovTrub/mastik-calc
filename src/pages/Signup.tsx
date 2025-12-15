@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { supabase } from "@/integrations/supabase/client";
+// import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,57 +60,57 @@ const Signup = () => {
   });
 
   const onSubmit = async (values: SignupFormValues) => {
-    setIsLoading(true);
-    try {
-      const { error } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            first_name: values.firstName,
-            last_name: values.lastName,
-            email: values.email,
-            phone_number: values.phoneNumber,
-            gender: values.gender,
-          },
-        },
-      });
-    console.log("signup values >>>>>>",values);
-      if (error) {
-        if (error.message.includes("already registered")) {
-          toast({
-            title: "Error",
-            description: "This email is already registered. Please login instead.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: error.message,
-            variant: "destructive",
-          });
-        }
-        return;
-      }
+    // setIsLoading(true);
+    // try {
+    //   const { error } = await supabase.auth.signUp({
+    //     email: values.email,
+    //     password: values.password,
+    //     options: {
+    //       emailRedirectTo: `${window.location.origin}/`,
+    //       data: {
+    //         first_name: values.firstName,
+    //         last_name: values.lastName,
+    //         email: values.email,
+    //         phone_number: values.phoneNumber,
+    //         gender: values.gender,
+    //       },
+    //     },
+    //   });
+    // console.log("signup values >>>>>>",values);
+    //   if (error) {
+    //     if (error.message.includes("already registered")) {
+    //       toast({
+    //         title: "Error",
+    //         description: "This email is already registered. Please login instead.",
+    //         variant: "destructive",
+    //       });
+    //     } else {
+    //       toast({
+    //         title: "Error",
+    //         description: error.message,
+    //         variant: "destructive",
+    //       });
+    //     }
+    //     return;
+    //   }
 
-      toast({
-        title: "Success!",
-        description: "Your account has been created. Redirecting...",
-      });
+    //   toast({
+    //     title: "Success!",
+    //     description: "Your account has been created. Redirecting...",
+    //   });
       
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Something went wrong",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    //   setTimeout(() => {
+    //     navigate("/");
+    //   }, 1000);
+    // } catch (error: any) {
+    //   toast({
+    //     title: "Error",
+    //     description: error.message || "Something went wrong",
+    //     variant: "destructive",
+    //   });
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   return (

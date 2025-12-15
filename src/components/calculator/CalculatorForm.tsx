@@ -434,7 +434,7 @@ export function CalculatorForm({ onCalculate, disabled = false }: CalculatorForm
         <div className="space-y-4 border-t pt-4">
           <h3 className="font-semibold text-lg">{t('form.donations')}</h3>
           
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="donations">{t('form.donations')}</Label>
             <NumericInput
               id="donations"
@@ -443,7 +443,7 @@ export function CalculatorForm({ onCalculate, disabled = false }: CalculatorForm
               onValueChange={(v) => setInputs({ ...inputs, donations: v })}
               placeholder={t('form.donationsPlaceholder')}
             />
-          </div>
+          </div> */}
 
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -459,10 +459,10 @@ export function CalculatorForm({ onCalculate, disabled = false }: CalculatorForm
           </div>
         </div>
 
-        <div className="space-y-4 border-t pt-4">
+        {/* <div className="space-y-4 border-t pt-4">
           <h3 className="font-semibold text-lg">{t('form.fringeBenefits')}</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+           */}
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="fringeCar">{t('form.carBenefit')}</Label>
               <NumericInput
@@ -515,7 +515,7 @@ export function CalculatorForm({ onCalculate, disabled = false }: CalculatorForm
               />
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="flex items-center space-x-2">
           <Checkbox

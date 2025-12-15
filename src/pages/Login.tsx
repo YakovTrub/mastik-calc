@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { supabase } from "@/integrations/supabase/client";
+// import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -28,16 +28,16 @@ const Login = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // Check if user is already logged in
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate("/");
-      }
-    };
-    checkUser();
-  }, [navigate]);
+  // useEffect(() => {
+  //   // Check if user is already logged in
+  //   const checkUser = async () => {
+  //     const { data: { session } } = await supabase.auth.getSession();
+  //     if (session) {
+  //       navigate("/");
+  //     }
+  //   };
+  //   checkUser();
+  // }, [navigate]);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -50,27 +50,27 @@ const Login = () => {
   const onSubmit = async (values: LoginFormValues) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
+      // const { error } = await supabase.auth.signInWithPassword({
+      //   email: values.email,
+      //   password: values.password,
+      // });
 
-      if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          toast({
-            title: "Error",
-            description: "Invalid email or password. Please try again.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: error.message,
-            variant: "destructive",
-          });
-        }
-        return;
-      }
+      // if (error) {
+      //   if (error.message.includes("Invalid login credentials")) {
+      //     toast({
+      //       title: "Error",
+      //       description: "Invalid email or password. Please try again.",
+      //       variant: "destructive",
+      //     });
+      //   } else {
+      //     toast({
+      //       title: "Error",
+      //       description: error.message,
+      //       variant: "destructive",
+      //     });
+      //   }
+      //   return;
+      // }
 
       toast({
         title: "Success!",
