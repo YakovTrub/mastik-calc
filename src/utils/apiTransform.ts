@@ -1,4 +1,4 @@
-import type { CalculatorInputs, CalculationResult } from '@/types/calculator';
+
 import type { ApiCalculatorInputs, ApiCalculationResult } from '@/services/api';
 
 export function transformToApiInputs(inputs: CalculatorInputs): ApiCalculatorInputs {

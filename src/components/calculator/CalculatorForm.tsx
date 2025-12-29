@@ -12,7 +12,6 @@ import { Calculator } from 'lucide-react';
 import { MultipleJobsInput } from './MultipleJobsInput';
 import { SelfEmployedInput } from './SelfEmployedInput';
 import type { CalculatorInputs, SelfEmployedIncome } from '@/types/calculator';
-import taxRules from '@/config/taxRules2025.json';
 
 interface CalculatorFormProps {
   onCalculate: (inputs: CalculatorInputs) => void;
@@ -378,14 +377,7 @@ export function CalculatorForm({ onCalculate, disabled = false }: CalculatorForm
             <SelectTrigger>
               <SelectValue placeholder="Select locality" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">None</SelectItem>
-              {taxRules.locality_discounts.map((loc) => (
-                <SelectItem key={loc.name} value={loc.name}>
-                  {loc.name} ({loc.discount_percent * 100}% discount)
-                </SelectItem>
-              ))}
-            </SelectContent>
+
           </Select>
         </div>
 
