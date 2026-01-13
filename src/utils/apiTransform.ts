@@ -1,4 +1,4 @@
-
+import type { CalculatorInputs, CalculationResult } from '@/types/calculator';
 import type { ApiCalculatorInputs, ApiCalculationResult } from '@/services/api';
 
 export function transformToApiInputs(inputs: CalculatorInputs): ApiCalculatorInputs {
@@ -45,11 +45,11 @@ export function transformFromApiResult(apiResult: ApiCalculationResult): Calcula
     taxableBase: apiResult.gross_salary, // Adjust based on API response
     incomeTaxBeforeCredits: apiResult.tax_breakdown.income_tax,
     creditPoints: apiResult.credit_points,
-    creditValue: 0, // Calculate based on credit points
+    creditValue: apiResult.tax_credit_annual, // Use the monetary value from API
     incomeTaxAfterCredits: apiResult.tax_breakdown.income_tax,
-    bituachLeumiEmployee: apiResult.tax_breakdown.national_insurance,
+    bituachLeumiEmployee: apiResult.tax_breakdown.national_insurance_employee,
     pensionEmployee: apiResult.tax_breakdown.pension_employee,
-    pensionEmployer: 0, // Not provided by API
+    pensionEmployer: apiResult.tax_breakdown.pension_employer, // Now provided by API
     severanceEmployer: 0, // Not provided by API
     localityDiscount: 0, // Not provided by API
     totalDeductions: apiResult.tax_breakdown.total_deductions,
@@ -63,7 +63,7 @@ export function transformFromApiResult(apiResult: ApiCalculationResult): Calcula
       },
       {
         category: 'National Insurance',
-        amount: apiResult.tax_breakdown.national_insurance,
+        amount: apiResult.tax_breakdown.national_insurance_employee,
         isTaxDeductible: true,
         description: 'National insurance contribution',
       },

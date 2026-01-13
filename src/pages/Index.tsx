@@ -72,13 +72,13 @@ export default function Index() {
               {backendStatus === 'online' && (
                 <>
                   <Wifi className="h-4 w-4 text-green-500" />
-                  <span className="text-green-600">Backend Online</span>
+                  <span className="text-green-600">Connected Online</span>
                 </>
               )}
               {backendStatus === 'offline' && (
                 <>
                   <WifiOff className="h-4 w-4 text-red-500" />
-                  <span className="text-red-600">Backend Offline</span>
+                  <span className="text-red-600">Connection Offline</span>
                 </>
               )}
             </div>
@@ -112,7 +112,7 @@ export default function Index() {
           <Alert className="mb-6 border-red-200 bg-red-50">
             <AlertCircle className="h-4 w-4 text-red-600" />
             <AlertDescription className="text-red-800">
-              Backend server is offline. Please start the backend server at http://localhost:8000 to use the calculator.
+              Connection not available. Please contact administrator to use the calculator.
             </AlertDescription>
           </Alert>
         )}
