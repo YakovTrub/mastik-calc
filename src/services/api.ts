@@ -1,5 +1,5 @@
 const API_BASE_URL = 'http://localhost:8000/api/v1';
-// const API_BASE_URL = "https://w2t7itknf1.execute-api.us-east-1.amazonaws.com/api/v1"
+// const API_BASE_URL = "https://sf79tpnltb.execute-api.us-east-1.amazonaws.com/api/v1"
 
 
 export interface ApiCalculatorInputs {
@@ -132,7 +132,7 @@ class ApiService {
 
   async healthCheck() {
     
-    // const response = await fetch('https://w2t7itknf1.execute-api.us-east-1.amazonaws.com/health');
+    // const response = await fetch('https://sf79tpnltb.execute-api.us-east-1.amazonaws.com/health');
     const response = await fetch('http://localhost:8000/health');
     return response.json();
   }
