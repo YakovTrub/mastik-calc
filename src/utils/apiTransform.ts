@@ -7,6 +7,21 @@ export function transformToApiInputs(inputs: CalculatorInputs): ApiCalculatorInp
     ? new Date().getFullYear() - new Date(inputs.dateOfBirth).getFullYear()
     : 30;
 
+  // Map gender from form to API format
+  const genderMap: Record<string, 'male' | 'female' | 'other'> = {
+    'male': 'male',
+    'female': 'female',
+  };
+  const apiGender = genderMap[inputs.gender] || 'other';
+
+  // Map education level to API format
+  const educationLevelMap: Record<string, 'BA' | 'MA' | 'PhD' | 'Teaching' | 'Medical' | 'Dental' | undefined> = {
+    'bachelor': 'BA',
+    'master': 'MA',
+    'doctorate': 'PhD',
+    'professional': 'Teaching',
+  };
+
   return {
     employment_type: inputs.employmentType,
     gross_salary: inputs.grossSalary,
@@ -28,13 +43,29 @@ export function transformToApiInputs(inputs: CalculatorInputs): ApiCalculatorInp
           }
         : undefined,
     age,
+    gender: apiGender,
     children: inputs.numberOfChildren,
-    spouse: inputs.maritalStatus !== 'single',
-    spouse_income: 0, // Not captured in current form
+    children_ages: inputs.childrenAges || [],
+    spouse: inputs.maritalStatus !== 'single' || inputs.hasSpouseNoIncome,
+    spouse_dependent: inputs.hasSpouseNoIncome,
+    spouse_income: inputs.hasSpouseNoIncome ? 0 : inputs.grossSalary * 0, // spouse_income from form, defaulting to 0
+    disability_percent: inputs.hasDisability ? 50 : undefined, // Default to 50% if disabled, not captured in form
     disabled: inputs.hasDisability,
+    is_single_parent: inputs.isSingleParent,
+    is_widow_widower: inputs.maritalStatus === 'widowed',
+    disabled_dependents: 0, // Not captured in current form
+    alimony_payment: 0, // Not captured in current form
+    child_support_payment: 0, // Not captured in current form
     new_immigrant: inputs.isNewImmigrant,
+    date_of_aliyah: inputs.immigrationDate ? inputs.immigrationDate.toISOString().split('T')[0] : undefined,
     student: inputs.educationLevel !== 'none',
+    education_level: educationLevelMap[inputs.educationLevel],
+    education_years_active: inputs.educationLevel !== 'none' ? 1 : 0, // Not captured in current form
+    professional_training: false, // Not captured in current form
     reserve_duty: inputs.hasArmyService,
+    foreign_worker: false, // Not captured in current form
+    foreign_worker_type: undefined,
+    city: inputs.locality || undefined,
     pension_rate: inputs.voluntaryPension || 6,
   };
 }
