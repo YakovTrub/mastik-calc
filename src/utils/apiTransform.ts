@@ -73,7 +73,7 @@ export function transformToApiInputs(inputs: CalculatorInputs): ApiCalculatorInp
 export function transformFromApiResult(apiResult: ApiCalculationResult): CalculationResult {
   return {
     grossSalary: apiResult.gross_salary,
-    taxableBase: apiResult.gross_salary, // Adjust based on API response
+    taxableBase: apiResult.taxable_base, // Adjust based on API response
     incomeTaxBeforeCredits: apiResult.tax_breakdown.income_tax,
     creditPoints: apiResult.credit_points,
     creditValue: apiResult.tax_credit_annual, // Use the monetary value from API
@@ -98,12 +98,12 @@ export function transformFromApiResult(apiResult: ApiCalculationResult): Calcula
         isTaxDeductible: true,
         description: 'National insurance contribution',
       },
-      {
-        category: 'Health Tax',
-        amount: apiResult.tax_breakdown.health_tax,
-        isTaxDeductible: true,
-        description: 'Health insurance tax',
-      },
+      // {
+      //   category: 'Health Tax',
+      //   amount: apiResult.tax_breakdown.health_tax,
+      //   isTaxDeductible: true,
+      //   description: 'Health insurance tax',
+      // },
       {
         category: 'Pension',
         amount: apiResult.tax_breakdown.pension_employee,

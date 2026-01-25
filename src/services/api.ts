@@ -1,5 +1,5 @@
 const API_BASE_URL = 'http://localhost:8000/api/v1';
-// const API_BASE_URL = "https://sf79tpnltb.execute-api.us-east-1.amazonaws.com/api/v1"
+// const API_BASE_URL = "https://6mpcvolp5c.execute-api.us-east-1.amazonaws.com/api/v1"
 
 
 export interface ApiCalculatorInputs {
@@ -77,6 +77,7 @@ export interface ApiCalculatorInputs {
 
 export interface ApiCalculationResult {
   gross_salary: number;
+  taxable_base: number;
   net_salary: number;
   tax_breakdown: {
     income_tax: number;
@@ -132,7 +133,7 @@ class ApiService {
 
   async healthCheck() {
     
-    // const response = await fetch('https://sf79tpnltb.execute-api.us-east-1.amazonaws.com/health');
+    // const response = await fetch('https://6mpcvolp5c.execute-api.us-east-1.amazonaws.com/health');
     const response = await fetch('http://localhost:8000/health');
     return response.json();
   }
