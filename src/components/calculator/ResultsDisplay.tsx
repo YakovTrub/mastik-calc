@@ -119,7 +119,7 @@ export function ResultsDisplay({ result }: ResultsDisplayProps) {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">{t('results.bituachLeumiEmployer')}</span>
-                <span className="text-sm text-success">+{formatCurrency(result.severanceEmployer)}</span>
+                <span className="text-sm text-success">+{formatCurrency(result.bituachLeumiEmployer)}</span>
               </div>
             </div>
           </div>

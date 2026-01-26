@@ -73,16 +73,17 @@ export function transformToApiInputs(inputs: CalculatorInputs): ApiCalculatorInp
 export function transformFromApiResult(apiResult: ApiCalculationResult): CalculationResult {
   return {
     grossSalary: apiResult.gross_salary,
-    taxableBase: apiResult.taxable_base, // Adjust based on API response
+    taxableBase: apiResult.taxable_base, 
     incomeTaxBeforeCredits: apiResult.tax_breakdown.income_tax,
     creditPoints: apiResult.credit_points,
-    creditValue: apiResult.tax_credit_annual, // Use the monetary value from API
+    creditValue: apiResult.tax_credit_monthly, 
     incomeTaxAfterCredits: apiResult.tax_breakdown.income_tax,
     bituachLeumiEmployee: apiResult.tax_breakdown.national_insurance_employee,
+    bituachLeumiEmployer: apiResult.tax_breakdown.national_insurance_employer, 
     pensionEmployee: apiResult.tax_breakdown.pension_employee,
-    pensionEmployer: apiResult.tax_breakdown.pension_employer, // Now provided by API
-    severanceEmployer: 0, // Not provided by API
-    localityDiscount: 0, // Not provided by API
+    pensionEmployer: apiResult.tax_breakdown.pension_employer,
+    severanceEmployer: 0, 
+    localityDiscount: 0,
     totalDeductions: apiResult.tax_breakdown.total_deductions,
     netSalary: apiResult.net_salary,
     breakdown: [

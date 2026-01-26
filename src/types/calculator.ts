@@ -93,6 +93,7 @@ export interface CalculationResult {
   creditValue: number;
   incomeTaxAfterCredits: number;
   bituachLeumiEmployee: number;
+  bituachLeumiEmployer: number;
   pensionEmployee: number;
   pensionEmployer: number;
   severanceEmployer: number;
